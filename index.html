@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Orthogonal Trajectory Calculator (Advanced)</title>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<style>
+:root {
+  --bg:#fff; --text:#000; --card:#f2f2f2;
+}
+.dark {
+  --bg:#121212; --text:#fff; --card:#1e1e1e;
+}
+body {
+  margin:0; font-family:Arial;
+  background:var(--bg); color:var(--text);
+}
+.container {
+  display:flex; flex-wrap:wrap; height:100vh;
+}
+.left { width:40%; background:var(--card); padding:20px; }
+.right { width:60%; padding:20px; }
+input, select, button {
+  width:100%; padding:10px; margin:6px 0;
+}
+.steps {
+  background:var(--bg); padding:10px; border-radius:5px;
+}
+@media(max-width:900px){
+  .left,.right{width:100%;}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<!-- LEFT -->
+<div class="left">
+<h2>Orthogonal Trajectory Calculator</h2>
+<button onclick="toggleTheme()">🌙 Toggle Theme</button>
+
+<select id="eq">
+  <option value="">-- Select Equation --</option>
+  <option value="y=Cx2">y = Cx²</option>
+  <option value="circle">x² + y² = C</option>
+  <option value="polar1">r = Cθ</option>
+  <option value="polar2">r = Ce^θ</option>
+  <option value="polar3">r = C sinθ</option>
+</select>
+
+<label>Number of curves (C values)</label>
+<input type="range" min="1" max="6" value="3" id="slider">
+
+<button onclick="calculate()">Calculate & Plot</button>
+
+<div class="steps" id="steps"></div>
+</div>
+
+<!-- RIGHT -->
+<div class="right">
+<h3>Graph</h3>
+<div id="graph" style="width:100%;height:450px"></div>
+
+<h3>Engineering Meaning</h3>
+<p>
+Orthogonal trajectories model electric field lines vs equipotentials,
+streamlines vs velocity potentials, and heat flow vs isotherms.
+</p>
+</div>
+
+</div>
+
+<script>
+function toggleTheme(){
+  document.body.classList.toggle("dark");
+  localStorage.setItem("theme",document.body.className);
+}
+if(localStorage.getItem("theme")){
+  document.body.className=localStorage.getItem("theme");
+}
+
+function calculate(){
+  const eq=document.getElementById("eq").value;
+  const n=parseInt(document.getElementById("slider").value);
+  let plots=[];
+  let steps="";
+
+  if(eq==="y=Cx2"){
+    steps=`y = Cx² → dy/dx = 2y/x → orthogonal = −x/2y → x² + 2y² = C`;
+    for(let c=1;c<=n;c++){
+      let x=[],y=[];
+      for(let i=-5;i<=5;i+=0.1){ x.push(i); y.push(c*i*i); }
+      plots.push({x,y,mode:"lines",line:{color:"blue"},showlegend:false});
+    }
+    for(let c=1;c<=n;c++){
+      let x=[],y=[];
+      for(let i=-5;i<=5;i+=0.1){
+        x.push(i);
+        y.push(Math.sqrt(Math.abs((c*10-i*i)/2)));
+      }
+      plots.push({x,y,mode:"lines",line:{color:"red"},showlegend:false});
+    }
+  }
+
+  else if(eq==="circle"){
+    steps=`x²+y²=C → dy/dx=−x/y → orthogonal=y/x → y²−x²=C`;
+    for(let c=1;c<=n;c++){
+      let x=[],y=[];
+      for(let t=0;t<=2*Math.PI;t+=0.05){
+        x.push(Math.sqrt(c*5)*Math.cos(t));
+        y.push(Math.sqrt(c*5)*Math.sin(t));
+      }
+      plots.push({x,y,mode:"lines",line:{color:"blue"},showlegend:false});
+    }
+  }
+
+  else if(eq.startsWith("polar")){
+    steps=`Polar curve → orthogonal trajectory obtained by perpendicular slope condition`;
+    for(let c=1;c<=n;c++){
+      let th=[],r=[];
+      for(let t=0.01;t<=6;t+=0.05){
+        th.push(t);
+        if(eq==="polar1") r.push(c*t);
+        if(eq==="polar2") r.push(c*Math.exp(t/3));
+        if(eq==="polar3") r.push(c*Math.sin(t));
+      }
+      plots.push({
+        r,theta:th,type:"scatterpolar",
+        mode:"lines",line:{color:"blue"},showlegend:false
+      });
+    }
+  }
+
+  document.getElementById("steps").innerHTML=steps;
+
+  Plotly.newPlot("graph",plots,{
+    margin:{t:30},
+    paper_bgcolor:"transparent",
+    plot_bgcolor:"transparent"
+  });
+}
+</script>
+</body>
+</html>

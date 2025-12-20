@@ -1620,7 +1620,7 @@
                 .replace(/\*/g, '·');
         }
         
-        // Graph Generation
+        // Graph Generation - FIXED VERSION (Lines only, no fills)
         function generateCompleteGraph(result) {
             currentGraphData = result;
             const numCurves = parseInt(curveDensitySlider.value);
@@ -1658,7 +1658,7 @@
                 yRange = [-6, 6];
             }
             
-            // Generate C values (positive and negative)
+            // Generate C values
             let cValues = [];
             const baseValues = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4];
             
@@ -1669,10 +1669,10 @@
             // Generate data points
             const step = 0.05;
             
-            // Plot original family
+            // Plot original family - LINES ONLY
             if (showOriginal) {
                 cValues.forEach((c, index) => {
-                    const opacity = 0.7 - (index * 0.1);
+                    const opacity = 0.8 - (index * 0.1);
                     const xData = [];
                     const yData = [];
                     
@@ -1687,20 +1687,23 @@
                             x: xData,
                             y: yData,
                             mode: 'lines',
+                            type: 'scatter',
                             name: `Original C=${c}`,
                             line: { 
                                 color: '#4a6fa5', 
                                 width: 2,
                                 opacity: opacity
                             },
+                            fill: 'none',
+                            fillcolor: 'none',
                             showlegend: false,
-                            opacity: opacity
+                            hoverinfo: 'skip'
                         });
                     }
                 });
             }
             
-            // Plot orthogonal trajectories
+            // Plot orthogonal trajectories - LINES ONLY
             if (showOrthogonal) {
                 cValues.forEach((c, index) => {
                     const opacity = 0.8 - (index * 0.1);
@@ -1718,6 +1721,7 @@
                             x: xData,
                             y: yData,
                             mode: 'lines',
+                            type: 'scatter',
                             name: `Orthogonal C=${c}`,
                             line: { 
                                 color: '#e74c3c', 
@@ -1725,8 +1729,10 @@
                                 dash: 'dash',
                                 opacity: opacity
                             },
+                            fill: 'none',
+                            fillcolor: 'none',
                             showlegend: false,
-                            opacity: opacity
+                            hoverinfo: 'skip'
                         });
                     }
                 });
@@ -1781,19 +1787,23 @@
                 hovermode: 'closest'
             };
             
-            // Plot the graph
-            Plotly.newPlot('graph', traces, layout, {
+            // Configuration for clean line plots
+            const config = {
                 responsive: true,
                 displayModeBar: true,
                 displaylogo: false,
                 modeBarButtonsToRemove: ['lasso2d', 'select2d', 'toggleSpikelines'],
                 scrollZoom: true,
-                showTips: true
-            });
+                showTips: false
+            };
+            
+            // Plot the graph
+            Plotly.newPlot('graph', traces, layout, config);
             
             updateToggleButtons();
         }
         
+        // Data generation functions
         function generatePolarData(c, equation, xData, yData, step, xRange, yRange) {
             for (let theta = 0; theta <= 2 * Math.PI; theta += step) {
                 let r = 0;
@@ -1819,47 +1829,63 @@
         }
         
         function generateCartesianData(c, equation, xData, yData, step, xRange, yRange) {
-            const generateBranch = (x, calculateY) => {
-                const y = calculateY(x);
-                if (isFinite(y) && Math.abs(y) <= yRange[1]) {
-                    xData.push(x);
-                    yData.push(y);
-                }
-            };
+            // Clear arrays
+            xData.length = 0;
+            yData.length = 0;
             
-            for (let x = xRange[0]; x <= xRange[1]; x += step) {
-                if (equation.includes('y=cx^2')) {
-                    generateBranch(x, (x) => c * x * x);
-                } else if (equation.includes('x^2+y^2=c')) {
-                    if (c > 0) {
-                        const radius = Math.sqrt(c);
-                        if (Math.abs(x) <= radius) {
-                            const yPos = Math.sqrt(c - x*x);
-                            const yNeg = -Math.sqrt(c - x*x);
-                            generateBranch(x, () => yPos);
-                            generateBranch(x, () => yNeg);
-                        }
+            // For circles, use parametric form for continuous lines
+            if (equation.includes('x^2+y^2=c') && c > 0) {
+                const radius = Math.sqrt(c);
+                const numPoints = 100;
+                for (let i = 0; i <= numPoints; i++) {
+                    const angle = (2 * Math.PI * i) / numPoints;
+                    const x = radius * Math.cos(angle);
+                    const y = radius * Math.sin(angle);
+                    if (isFinite(y) && Math.abs(y) <= yRange[1] && Math.abs(x) <= xRange[1]) {
+                        xData.push(x);
+                        yData.push(y);
                     }
+                }
+                return;
+            }
+            
+            // For other equations
+            for (let x = xRange[0]; x <= xRange[1]; x += step) {
+                let y = null;
+                
+                if (equation.includes('y=cx^2')) {
+                    y = c * x * x;
                 } else if (equation.includes('y=c/x')) {
                     if (Math.abs(x) > 0.1) {
-                        generateBranch(x, (x) => c / x);
+                        y = c / x;
                     }
                 } else if (equation.includes('y=ce^x')) {
-                    generateBranch(x, (x) => c * Math.exp(x));
+                    y = c * Math.exp(x);
                 } else if (equation.includes('y^2=cx^3')) {
                     if (c * x * x * x >= 0) {
-                        const yPos = Math.sqrt(c * x * x * x);
-                        const yNeg = -Math.sqrt(c * x * x * x);
-                        generateBranch(x, () => yPos);
-                        generateBranch(x, () => yNeg);
+                        // Add positive branch
+                        xData.push(x);
+                        yData.push(Math.sqrt(c * x * x * x));
+                        // Add negative branch
+                        xData.push(x);
+                        yData.push(-Math.sqrt(c * x * x * x));
+                        continue;
                     }
                 } else if (equation.includes('y^2=cx')) {
                     if (c * x >= 0) {
-                        const yPos = Math.sqrt(c * x);
-                        const yNeg = -Math.sqrt(c * x);
-                        generateBranch(x, () => yPos);
-                        generateBranch(x, () => yNeg);
+                        // Add positive branch
+                        xData.push(x);
+                        yData.push(Math.sqrt(c * x));
+                        // Add negative branch
+                        xData.push(x);
+                        yData.push(-Math.sqrt(c * x));
+                        continue;
                     }
+                }
+                
+                if (y !== null && isFinite(y) && Math.abs(y) <= yRange[1]) {
+                    xData.push(x);
+                    yData.push(y);
                 }
             }
         }
@@ -1902,64 +1928,80 @@
         }
         
         function generateOrthogonalCartesianData(c, equation, xData, yData, step, xRange, yRange) {
-            const generateBranch = (x, calculateY) => {
-                const y = calculateY(x);
-                if (isFinite(y) && Math.abs(y) <= yRange[1]) {
-                    xData.push(x);
-                    yData.push(y);
-                }
-            };
+            // Clear arrays
+            xData.length = 0;
+            yData.length = 0;
             
             if (equation.includes('y=cx^2')) {
                 if (c > 0) {
                     const a = Math.sqrt(2*c);
                     const b = Math.sqrt(c);
-                    for (let angle = 0; angle <= 2 * Math.PI; angle += step) {
+                    const numPoints = 100;
+                    for (let i = 0; i <= numPoints; i++) {
+                        const angle = (2 * Math.PI * i) / numPoints;
                         const x = a * Math.cos(angle);
                         const y = b * Math.sin(angle);
-                        generateBranch(x, () => y);
+                        if (isFinite(y) && Math.abs(y) <= yRange[1]) {
+                            xData.push(x);
+                            yData.push(y);
+                        }
                     }
                 }
             } else if (equation.includes('x^2+y^2=c')) {
                 for (let x = xRange[0]; x <= xRange[1]; x += step) {
-                    generateBranch(x, (x) => c * x);
+                    const y = c * x;
+                    if (isFinite(y) && Math.abs(y) <= yRange[1]) {
+                        xData.push(x);
+                        yData.push(y);
+                    }
                 }
             } else if (equation.includes('y=c/x')) {
                 for (let x = xRange[0]; x <= xRange[1]; x += step) {
                     const term = x*x + c;
                     if (term >= 0) {
-                        const yPos = Math.sqrt(term);
-                        const yNeg = -Math.sqrt(term);
-                        generateBranch(x, () => yPos);
-                        generateBranch(x, () => yNeg);
+                        // Add positive branch
+                        xData.push(x);
+                        yData.push(Math.sqrt(term));
+                        // Add negative branch
+                        xData.push(x);
+                        yData.push(-Math.sqrt(term));
                     }
                 }
             } else if (equation.includes('y=ce^x')) {
                 for (let x = xRange[0]; x <= xRange[1]; x += step) {
                     const term = c - 2*x;
                     if (term >= 0) {
-                        const yPos = Math.sqrt(term);
-                        const yNeg = -Math.sqrt(term);
-                        generateBranch(x, () => yPos);
-                        generateBranch(x, () => yNeg);
+                        // Add positive branch
+                        xData.push(x);
+                        yData.push(Math.sqrt(term));
+                        // Add negative branch
+                        xData.push(x);
+                        yData.push(-Math.sqrt(term));
                     }
                 }
             } else if (equation.includes('y^2=cx^3')) {
                 if (c > 0) {
-                    for (let angle = 0; angle <= 2 * Math.PI; angle += step) {
+                    const numPoints = 100;
+                    for (let i = 0; i <= numPoints; i++) {
+                        const angle = (2 * Math.PI * i) / numPoints;
                         const x = Math.sqrt(c) * Math.cos(angle);
                         const y = Math.sqrt(2*c/3) * Math.sin(angle);
-                        generateBranch(x, () => y);
+                        if (isFinite(y) && Math.abs(y) <= yRange[1]) {
+                            xData.push(x);
+                            yData.push(y);
+                        }
                     }
                 }
             } else if (equation.includes('y^2=cx')) {
                 for (let x = xRange[0]; x <= xRange[1]; x += step) {
                     const term = c - 2*x*x;
                     if (term >= 0) {
-                        const yPos = Math.sqrt(term);
-                        const yNeg = -Math.sqrt(term);
-                        generateBranch(x, () => yPos);
-                        generateBranch(x, () => yNeg);
+                        // Add positive branch
+                        xData.push(x);
+                        yData.push(Math.sqrt(term));
+                        // Add negative branch
+                        xData.push(x);
+                        yData.push(-Math.sqrt(term));
                     }
                 }
             }

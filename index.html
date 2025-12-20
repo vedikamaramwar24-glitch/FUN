@@ -1,147 +1,2079 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Orthogonal Trajectory Calculator (Advanced)</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orthogonal Trajectory Calculator | Engineering Mathematics</title>
+    <meta name="description" content="Interactive calculator for finding orthogonal trajectories of curve families with step-by-step solutions and visualizations for engineering students.">
+    <meta name="keywords" content="orthogonal trajectories, differential equations, engineering mathematics, curve families, calculus, visualization">
+    <meta name="author" content="Engineering Mathematics Educational Tool">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #4fc3a1;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --text-color: #333;
+            --text-light: #f8f9fa;
+            --error-color: #e74c3c;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --border-radius: 12px;
+            --box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        .dark-mode {
+            --primary-color: #5a8fd8;
+            --secondary-color: #2d7ab5;
+            --accent-color: #5fd3b1;
+            --light-color: #1a1a2e;
+            --dark-color: #16213e;
+            --text-color: #f1f1f1;
+            --text-light: #f1f1f1;
+            --box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
 
-<style>
-:root {
-  --bg:#fff; --text:#000; --card:#f2f2f2;
-}
-.dark {
-  --bg:#121212; --text:#fff; --card:#1e1e1e;
-}
-body {
-  margin:0; font-family:Arial;
-  background:var(--bg); color:var(--text);
-}
-.container {
-  display:flex; flex-wrap:wrap; height:100vh;
-}
-.left { width:40%; background:var(--card); padding:20px; }
-.right { width:60%; padding:20px; }
-input, select, button {
-  width:100%; padding:10px; margin:6px 0;
-}
-.steps {
-  background:var(--bg); padding:10px; border-radius:5px;
-}
-@media(max-width:900px){
-  .left,.right{width:100%;}
-}
-</style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: linear-gradient(135deg, var(--light-color) 0%, #eef2f3 100%);
+            transition: var(--transition);
+            min-height: 100vh;
+        }
+
+        .dark-mode body {
+            background: linear-gradient(135deg, var(--light-color) 0%, #0f3460 100%);
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .dark-mode header {
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--box-shadow);
+        }
+
+        .logo-icon i {
+            color: white;
+            font-size: 1.8rem;
+        }
+
+        .logo-text h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .logo-text p {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .theme-toggle {
+            background: var(--primary-color);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(15deg) scale(1.1);
+            background: var(--accent-color);
+        }
+
+        /* Main Content Layout */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (min-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--dark-color);
+            color: var(--text-light);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-color);
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h2 i {
+            font-size: 1.2rem;
+        }
+
+        /* Input Section */
+        .input-section {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .input-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
+        }
+
+        .instructions {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: calc(var(--border-radius) - 4px);
+            margin-bottom: 25px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .instructions h3 {
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .instructions ul {
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        .instructions li::marker {
+            color: var(--accent-color);
+        }
+
+        .equation-input-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .equation-input {
+            width: 100%;
+            padding: 18px 20px;
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius);
+            color: var(--text-light);
+            transition: var(--transition);
+            font-family: 'Courier New', monospace;
+        }
+
+        .equation-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(79, 195, 161, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .equation-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .example-buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 10px;
+            margin: 25px 0;
+        }
+
+        .example-btn {
+            padding: 12px 8px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            text-align: center;
+            font-weight: 500;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
+        .example-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+
+        .example-btn:hover {
+            background: var(--accent-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .example-btn:hover::before {
+            left: 100%;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--accent-color), #3db08f);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .calculate-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(79, 195, 161, 0.3);
+        }
+
+        .calculate-btn:hover::before {
+            left: 100%;
+        }
+
+        .calculate-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Loading and Error States */
+        .loading-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: var(--border-radius);
+            z-index: 100;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(231, 76, 60, 0.15);
+            border-left: 4px solid var(--error-color);
+            padding: 15px;
+            border-radius: calc(var(--border-radius) - 4px);
+            margin-top: 20px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .error-message i {
+            color: var(--error-color);
+            font-size: 1.2rem;
+        }
+
+        /* Results Section */
+        .result-section {
+            min-height: 500px;
+        }
+
+        .step-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: calc(var(--border-radius) - 4px);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+
+        .step-container:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .step-number {
+            background: var(--accent-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .step-title {
+            color: var(--accent-color);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .step-content {
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-size: 1.2rem;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: calc(var(--border-radius) - 8px);
+            overflow-x: auto;
+            text-align: center;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .final-result {
+            background: linear-gradient(135deg, rgba(79, 195, 161, 0.15), rgba(74, 111, 165, 0.15));
+            border-left: 4px solid var(--accent-color);
+            padding: 25px;
+            border-radius: calc(var(--border-radius) - 4px);
+            margin-top: 30px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(79, 195, 161, 0.2); }
+            70% { box-shadow: 0 0 0 10px rgba(79, 195, 161, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(79, 195, 161, 0); }
+        }
+
+        .final-result h3 {
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .final-equation {
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-size: 1.4rem;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: calc(var(--border-radius) - 8px);
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Graph Section */
+        .graph-container {
+            height: 400px;
+            margin: 20px 0;
+            border-radius: calc(var(--border-radius) - 4px);
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .graph-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: rgba(255, 255, 255, 0.5);
+            text-align: center;
+        }
+
+        .graph-placeholder i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .graph-legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+
+        .legend-color {
+            width: 25px;
+            height: 4px;
+            border-radius: 2px;
+        }
+
+        .original-color {
+            background: #4a6fa5;
+            box-shadow: 0 2px 5px rgba(74, 111, 165, 0.3);
+        }
+
+        .orthogonal-color {
+            background: #e74c3c;
+            box-shadow: 0 2px 5px rgba(231, 76, 60, 0.3);
+        }
+
+        .graph-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .control-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .control-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slider {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+            -webkit-appearance: none;
+            transition: var(--transition);
+        }
+
+        .slider:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            border: 2px solid white;
+            transition: var(--transition);
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(79, 195, 161, 0.4);
+        }
+
+        .slider-value {
+            min-width: 30px;
+            text-align: center;
+            font-weight: bold;
+            color: var(--accent-color);
+            font-size: 1.1rem;
+        }
+
+        .toggle-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .toggle-btn {
+            padding: 10px 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            font-weight: 500;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .toggle-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(74, 111, 165, 0.9);
+        }
+
+        .toggle-btn.active {
+            background: var(--accent-color);
+            box-shadow: 0 4px 15px rgba(79, 195, 161, 0.3);
+        }
+
+        /* Educational Content */
+        .educational-content {
+            line-height: 1.8;
+        }
+
+        .content-section {
+            margin-bottom: 25px;
+        }
+
+        .content-section h3 {
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .content-section ul, .content-section ol {
+            padding-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        .content-section li {
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .content-section li::marker {
+            color: var(--accent-color);
+        }
+
+        .application-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .application-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: calc(var(--border-radius) - 4px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+
+        .application-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .application-card i {
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .application-card h4 {
+            color: var(--text-light);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .application-card p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 50px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--text-color);
+        }
+
+        .dark-mode footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .footer-logo i {
+            color: var(--accent-color);
+            font-size: 1.5rem;
+        }
+
+        .footer-logo span {
+            font-size: 1.2rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .footer-link {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dark-mode .footer-link {
+            color: var(--text-light);
+        }
+
+        .footer-link:hover {
+            color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .copyright {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-top: 20px;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 5px;
+            transition: var(--transition);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+
+        /* Math Equation Styling */
+        .math-equation {
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-size: 1.1rem;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                width: 100%;
+                padding: 15px;
+            }
+            
+            .logo-text h1 {
+                font-size: 1.5rem;
+            }
+            
+            .logo-icon {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .graph-container {
+                height: 300px;
+            }
+            
+            .example-buttons-grid {
+                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            }
+            
+            .toggle-buttons {
+                flex-direction: column;
+            }
+            
+            .application-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 15px;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .theme-toggle {
+                width: 45px;
+                height: 45px;
+            }
+            
+            .step-content, .final-equation {
+                font-size: 1rem;
+                padding: 10px;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            .card {
+                break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+            
+            .graph-container {
+                height: 300px;
+            }
+            
+            .calculate-btn, .theme-toggle, .example-btn, .toggle-btn {
+                display: none;
+            }
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Focus Styles */
+        *:focus {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 2px;
+        }
+
+        /* High Contrast Mode Support */
+        @media (prefers-contrast: high) {
+            :root {
+                --primary-color: #0044cc;
+                --accent-color: #008800;
+                --text-color: #000000;
+            }
+            
+            .dark-mode {
+                --primary-color: #66aaff;
+                --accent-color: #44ff44;
+                --text-color: #ffffff;
+            }
+        }
+    </style>
 </head>
-
 <body>
-<div class="container">
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <i class="fas fa-project-diagram"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Orthogonal Trajectory Calculator</h1>
+                    <p>Engineering Mathematics Visualization Tool</p>
+                </div>
+            </div>
+            <div class="header-controls">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </header>
 
-<!-- LEFT -->
-<div class="left">
-<h2>Orthogonal Trajectory Calculator</h2>
-<button onclick="toggleTheme()">🌙 Toggle Theme</button>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Left Column: Input and Results -->
+            <div class="left-column">
+                <!-- Input Section -->
+                <div class="card input-section">
+                    <h2><i class="fas fa-calculator"></i> Enter Curve Equation</h2>
+                    
+                    <div class="instructions">
+                        <h3><i class="fas fa-info-circle"></i> How to Use This Calculator:</h3>
+                        <ul>
+                            <li>Enter a family of curves or differential equation in the input field below</li>
+                            <li>Click any example button for quick input</li>
+                            <li>Press "Calculate" to compute the orthogonal trajectory</li>
+                            <li>View step-by-step solution and interactive graph</li>
+                            <li>Use graph controls to customize the visualization</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="equation-input-container">
+                        <input type="text" 
+                               id="equationInput" 
+                               class="equation-input" 
+                               placeholder="e.g., y = Cx², x² + y² = C, or dy/dx = x/y"
+                               aria-label="Enter curve equation">
+                    </div>
+                    
+                    <div class="example-buttons-grid">
+                        <button class="example-btn" data-example="y = Cx^2">y = Cx² (Parabolas)</button>
+                        <button class="example-btn" data-example="x^2 + y^2 = C">x² + y² = C (Circles)</button>
+                        <button class="example-btn" data-example="y = C/x">y = C/x (Hyperbolas)</button>
+                        <button class="example-btn" data-example="y = Ce^x">y = Ceˣ (Exponentials)</button>
+                        <button class="example-btn" data-example="dy/dx = x/y">dy/dx = x/y</button>
+                        <button class="example-btn" data-example="y^2 = Cx^3">y² = Cx³</button>
+                        <button class="example-btn" data-example="y = Cx^n">y = Cxⁿ (Power Law)</button>
+                        <button class="example-btn" data-example="y^2 = Cx">y² = Cx (Parabolas)</button>
+                        <button class="example-btn" data-example="r = Cθ">r = Cθ (Spiral)</button>
+                        <button class="example-btn" data-example="r = Ce^θ">r = Ceᶿ (Log Spiral)</button>
+                        <button class="example-btn" data-example="r = Csin(θ)">r = C·sin(θ)</button>
+                        <button class="example-btn" data-example="r = Ccos(θ)">r = C·cos(θ)</button>
+                    </div>
+                    
+                    <button class="calculate-btn" id="calculateBtn">
+                        <i class="fas fa-calculator"></i> Calculate Orthogonal Trajectory
+                    </button>
+                    
+                    <div class="loading-overlay" id="loadingIndicator">
+                        <div class="loading-spinner"></div>
+                        <p>Calculating orthogonal trajectory...</p>
+                    </div>
+                    
+                    <div class="error-message" id="errorMessage">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span id="errorText"></span>
+                    </div>
+                </div>
+                
+                <!-- Results Section -->
+                <div class="card result-section">
+                    <h2><i class="fas fa-list-ol"></i> Step-by-Step Solution</h2>
+                    
+                    <div class="step-container">
+                        <div class="step-header">
+                            <div class="step-number">1</div>
+                            <div class="step-title">Original Equation</div>
+                        </div>
+                        <div class="step-content" id="originalEquation">
+                            Enter an equation and click "Calculate"
+                        </div>
+                    </div>
+                    
+                    <div class="step-container">
+                        <div class="step-header">
+                            <div class="step-number">2</div>
+                            <div class="step-title">Differential Equation</div>
+                        </div>
+                        <div class="step-content" id="diffEquation">
+                            -
+                        </div>
+                    </div>
+                    
+                    <div class="step-container">
+                        <div class="step-header">
+                            <div class="step-number">3</div>
+                            <div class="step-title">Orthogonal Differential Equation (Negative Reciprocal)</div>
+                        </div>
+                        <div class="step-content" id="orthogonalDiffEquation">
+                            -
+                        </div>
+                    </div>
+                    
+                    <div class="step-container">
+                        <div class="step-header">
+                            <div class="step-number">4</div>
+                            <div class="step-title">Solving Steps</div>
+                        </div>
+                        <div class="step-content" id="solvingSteps">
+                            -
+                        </div>
+                    </div>
+                    
+                    <div class="final-result">
+                        <h3><i class="fas fa-check-circle"></i> Orthogonal Trajectory Result</h3>
+                        <div class="final-equation" id="finalResult">
+                            Result will appear here after calculation
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column: Graph and Educational Content -->
+            <div class="right-column">
+                <!-- Graph Visualization -->
+                <div class="card">
+                    <h2><i class="fas fa-chart-line"></i> Interactive Graph Visualization</h2>
+                    <p style="margin-bottom: 15px; opacity: 0.9;">Complete graphs showing both original family (blue) and orthogonal trajectories (red):</p>
+                    
+                    <div class="graph-legend">
+                        <div class="legend-item">
+                            <div class="legend-color original-color"></div>
+                            <span>Original Family of Curves</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color orthogonal-color"></div>
+                            <span>Orthogonal Trajectories</span>
+                        </div>
+                    </div>
+                    
+                    <div class="graph-container" id="graph">
+                        <div class="graph-placeholder">
+                            <i class="fas fa-chart-line"></i>
+                            <p>Complete graph will appear here after calculation</p>
+                            <p style="font-size: 0.9rem; margin-top: 10px;">Showing both positive and negative values for complete visualization</p>
+                        </div>
+                    </div>
+                    
+                    <div class="graph-controls">
+                        <div class="control-group">
+                            <label class="control-label">Number of Curves: <span id="curveCount">5</span></label>
+                            <div class="slider-container">
+                                <input type="range" id="curveDensity" class="slider" min="3" max="8" value="5" step="1">
+                                <span class="slider-value" id="curveValue">5</span>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Display Options:</label>
+                            <div class="toggle-buttons">
+                                <button class="toggle-btn active" id="toggleOriginal">Show Original</button>
+                                <button class="toggle-btn active" id="toggleOrthogonal">Show Orthogonal</button>
+                                <button class="toggle-btn active" id="toggleBoth">Show Both</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Educational Content -->
+                <div class="card educational-content">
+                    <h2><i class="fas fa-graduation-cap"></i> Understanding Orthogonal Trajectories</h2>
+                    
+                    <div class="content-section">
+                        <h3><i class="fas fa-lightbulb"></i> What are Orthogonal Trajectories?</h3>
+                        <p>Orthogonal trajectories are families of curves that intersect another family of curves at right angles (orthogonally). In mathematical terms, at every intersection point, the product of their slopes is -1.</p>
+                    </div>
+                    
+                    <div class="content-section">
+                        <h3><i class="fas fa-cogs"></i> Calculation Methodology</h3>
+                        <ol>
+                            <li><strong>Start with given family:</strong> F(x, y, C) = 0, where C is the parameter</li>
+                            <li><strong>Differentiate to eliminate C:</strong> Obtain dy/dx = f(x, y)</li>
+                            <li><strong>Take negative reciprocal:</strong> For orthogonal trajectories, replace dy/dx with -1/f(x, y)</li>
+                            <li><strong>Solve the new differential equation:</strong> Integrate to find the orthogonal family</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="content-section">
+                        <h3><i class="fas fa-industry"></i> Engineering Applications</h3>
+                        <div class="application-grid">
+                            <div class="application-card">
+                                <i class="fas fa-bolt"></i>
+                                <h4>Electromagnetic Fields</h4>
+                                <p>Electric field lines and equipotential surfaces are orthogonal trajectories</p>
+                            </div>
+                            <div class="application-card">
+                                <i class="fas fa-water"></i>
+                                <h4>Fluid Dynamics</h4>
+                                <p>Streamlines and equipotential lines in potential flow analysis</p>
+                            </div>
+                            <div class="application-card">
+                                <i class="fas fa-thermometer-half"></i>
+                                <h4>Heat Transfer</h4>
+                                <p>Isotherms and heat flux lines in conduction problems</p>
+                            </div>
+                            <div class="application-card">
+                                <i class="fas fa-mountain"></i>
+                                <h4>Topography</h4>
+                                <p>Contour lines and gradient directions on topographic maps</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>Orthogonal Trajectory Calculator</span>
+                </div>
+                
+                <div class="footer-links">
+                    <a href="#" class="footer-link" onclick="showAbout()">
+                        <i class="fas fa-info-circle"></i> About
+                    </a>
+                    <a href="#" class="footer-link" onclick="showExamples()">
+                        <i class="fas fa-book"></i> Examples
+                    </a>
+                    <a href="#" class="footer-link" onclick="showTutorial()">
+                        <i class="fas fa-graduation-cap"></i> Tutorial
+                    </a>
+                    <a href="#" class="footer-link" onclick="printPage()">
+                        <i class="fas fa-print"></i> Print
+                    </a>
+                </div>
+                
+                <div class="copyright">
+                    <p>Orthogonal Trajectory Calculator &copy; <span id="currentYear"></span> | Engineering Mathematics Educational Tool</p>
+                    <p>Designed for engineering students | All calculations performed client-side</p>
+                    <p style="margin-top: 10px; font-size: 0.8rem; opacity: 0.6;">
+                        <i class="fas fa-code"></i> Built with HTML5, CSS3, JavaScript & Plotly.js
+                    </p>
+                </div>
+            </div>
+        </footer>
+    </div>
 
-<select id="eq">
-  <option value="">-- Select Equation --</option>
-  <option value="y=Cx2">y = Cx²</option>
-  <option value="circle">x² + y² = C</option>
-  <option value="polar1">r = Cθ</option>
-  <option value="polar2">r = Ce^θ</option>
-  <option value="polar3">r = C sinθ</option>
-</select>
-
-<label>Number of curves (C values)</label>
-<input type="range" min="1" max="6" value="3" id="slider">
-
-<button onclick="calculate()">Calculate & Plot</button>
-
-<div class="steps" id="steps"></div>
-</div>
-
-<!-- RIGHT -->
-<div class="right">
-<h3>Graph</h3>
-<div id="graph" style="width:100%;height:450px"></div>
-
-<h3>Engineering Meaning</h3>
-<p>
-Orthogonal trajectories model electric field lines vs equipotentials,
-streamlines vs velocity potentials, and heat flow vs isotherms.
-</p>
-</div>
-
-</div>
-
-<script>
-function toggleTheme(){
-  document.body.classList.toggle("dark");
-  localStorage.setItem("theme",document.body.className);
-}
-if(localStorage.getItem("theme")){
-  document.body.className=localStorage.getItem("theme");
-}
-
-function calculate(){
-  const eq=document.getElementById("eq").value;
-  const n=parseInt(document.getElementById("slider").value);
-  let plots=[];
-  let steps="";
-
-  if(eq==="y=Cx2"){
-    steps=`y = Cx² → dy/dx = 2y/x → orthogonal = −x/2y → x² + 2y² = C`;
-    for(let c=1;c<=n;c++){
-      let x=[],y=[];
-      for(let i=-5;i<=5;i+=0.1){ x.push(i); y.push(c*i*i); }
-      plots.push({x,y,mode:"lines",line:{color:"blue"},showlegend:false});
-    }
-    for(let c=1;c<=n;c++){
-      let x=[],y=[];
-      for(let i=-5;i<=5;i+=0.1){
-        x.push(i);
-        y.push(Math.sqrt(Math.abs((c*10-i*i)/2)));
-      }
-      plots.push({x,y,mode:"lines",line:{color:"red"},showlegend:false});
-    }
-  }
-
-  else if(eq==="circle"){
-    steps=`x²+y²=C → dy/dx=−x/y → orthogonal=y/x → y²−x²=C`;
-    for(let c=1;c<=n;c++){
-      let x=[],y=[];
-      for(let t=0;t<=2*Math.PI;t+=0.05){
-        x.push(Math.sqrt(c*5)*Math.cos(t));
-        y.push(Math.sqrt(c*5)*Math.sin(t));
-      }
-      plots.push({x,y,mode:"lines",line:{color:"blue"},showlegend:false});
-    }
-  }
-
-  else if(eq.startsWith("polar")){
-    steps=`Polar curve → orthogonal trajectory obtained by perpendicular slope condition`;
-    for(let c=1;c<=n;c++){
-      let th=[],r=[];
-      for(let t=0.01;t<=6;t+=0.05){
-        th.push(t);
-        if(eq==="polar1") r.push(c*t);
-        if(eq==="polar2") r.push(c*Math.exp(t/3));
-        if(eq==="polar3") r.push(c*Math.sin(t));
-      }
-      plots.push({
-        r,theta:th,type:"scatterpolar",
-        mode:"lines",line:{color:"blue"},showlegend:false
-      });
-    }
-  }
-
-  document.getElementById("steps").innerHTML=steps;
-
-  Plotly.newPlot("graph",plots,{
-    margin:{t:30},
-    paper_bgcolor:"transparent",
-    plot_bgcolor:"transparent"
-  });
-}
-</script>
+    <script>
+        // DOM Elements
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        const equationInput = document.getElementById('equationInput');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        
+        // Graph Controls
+        const curveDensitySlider = document.getElementById('curveDensity');
+        const curveCount = document.getElementById('curveCount');
+        const curveValue = document.getElementById('curveValue');
+        const toggleOriginalBtn = document.getElementById('toggleOriginal');
+        const toggleOrthogonalBtn = document.getElementById('toggleOrthogonal');
+        const toggleBothBtn = document.getElementById('toggleBoth');
+        
+        // Result Display Elements
+        const originalEquation = document.getElementById('originalEquation');
+        const diffEquation = document.getElementById('diffEquation');
+        const orthogonalDiffEquation = document.getElementById('orthogonalDiffEquation');
+        const solvingSteps = document.getElementById('solvingSteps');
+        const finalResult = document.getElementById('finalResult');
+        
+        // State Variables
+        let showOriginal = true;
+        let showOrthogonal = true;
+        let currentGraphData = null;
+        let isDarkMode = false;
+        
+        // Initialize Application
+        document.addEventListener('DOMContentLoaded', initializeApp);
+        
+        function initializeApp() {
+            // Set current year in footer
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            
+            // Initialize theme
+            initializeTheme();
+            
+            // Initialize event listeners
+            initializeEventListeners();
+            
+            // Set default example
+            equationInput.value = "y = Cx^2";
+            equationInput.focus();
+            
+            // Clear results
+            clearResults();
+            
+            // Update toggle buttons
+            updateToggleButtons();
+        }
+        
+        // Theme Management
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('orthogonalCalculatorTheme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                enableDarkMode();
+            } else {
+                enableLightMode();
+            }
+            
+            themeToggle.addEventListener('click', toggleTheme);
+        }
+        
+        function enableDarkMode() {
+            document.body.classList.add('dark-mode');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+            themeToggle.setAttribute('aria-label', 'Switch to light mode');
+            isDarkMode = true;
+            localStorage.setItem('orthogonalCalculatorTheme', 'dark');
+        }
+        
+        function enableLightMode() {
+            document.body.classList.remove('dark-mode');
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+            themeToggle.setAttribute('aria-label', 'Switch to dark mode');
+            isDarkMode = false;
+            localStorage.setItem('orthogonalCalculatorTheme', 'light');
+        }
+        
+        function toggleTheme() {
+            if (isDarkMode) {
+                enableLightMode();
+            } else {
+                enableDarkMode();
+            }
+        }
+        
+        // Event Listeners
+        function initializeEventListeners() {
+            // Example buttons
+            document.querySelectorAll('.example-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const example = button.getAttribute('data-example');
+                    equationInput.value = example;
+                    equationInput.focus();
+                    clearResults();
+                    showNotification(`Loaded example: ${example}`);
+                });
+            });
+            
+            // Calculate button
+            calculateBtn.addEventListener('click', calculateOrthogonalTrajectory);
+            
+            // Enter key in input field
+            equationInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    calculateOrthogonalTrajectory();
+                }
+            });
+            
+            // Graph controls
+            curveDensitySlider.addEventListener('input', () => {
+                const value = curveDensitySlider.value;
+                curveCount.textContent = value;
+                curveValue.textContent = value;
+                if (currentGraphData) {
+                    generateCompleteGraph(currentGraphData);
+                }
+            });
+            
+            toggleOriginalBtn.addEventListener('click', () => {
+                showOriginal = true;
+                showOrthogonal = false;
+                updateToggleButtons();
+                if (currentGraphData) {
+                    generateCompleteGraph(currentGraphData);
+                }
+            });
+            
+            toggleOrthogonalBtn.addEventListener('click', () => {
+                showOriginal = false;
+                showOrthogonal = true;
+                updateToggleButtons();
+                if (currentGraphData) {
+                    generateCompleteGraph(currentGraphData);
+                }
+            });
+            
+            toggleBothBtn.addEventListener('click', () => {
+                showOriginal = true;
+                showOrthogonal = true;
+                updateToggleButtons();
+                if (currentGraphData) {
+                    generateCompleteGraph(currentGraphData);
+                }
+            });
+        }
+        
+        function updateToggleButtons() {
+            toggleOriginalBtn.classList.toggle('active', showOriginal && !showOrthogonal);
+            toggleOrthogonalBtn.classList.toggle('active', !showOriginal && showOrthogonal);
+            toggleBothBtn.classList.toggle('active', showOriginal && showOrthogonal);
+        }
+        
+        // Main Calculation Function
+        function calculateOrthogonalTrajectory() {
+            const input = equationInput.value.trim();
+            
+            if (!input) {
+                showError("Please enter an equation.");
+                return;
+            }
+            
+            // Show loading
+            loadingIndicator.style.display = 'flex';
+            errorMessage.style.display = 'none';
+            
+            // Clear previous results
+            clearResults();
+            
+            // Process in background
+            setTimeout(() => {
+                try {
+                    const result = processEquation(input);
+                    displayResults(result);
+                    generateCompleteGraph(result);
+                    showNotification("Orthogonal trajectory calculated successfully!");
+                } catch (error) {
+                    showError(error.message);
+                } finally {
+                    loadingIndicator.style.display = 'none';
+                }
+            }, 600);
+        }
+        
+        // Equation Processing
+        function processEquation(input) {
+            let originalEquation = input;
+            let normalizedInput = input.replace(/\s+/g, '').toLowerCase();
+            
+            const isDiffEq = normalizedInput.includes('dy/dx') || normalizedInput.includes('dr/dθ');
+            let diffEquation, orthogonalDiffEquation, solvingSteps, finalResult;
+            
+            if (isDiffEq) {
+                // Handle differential equation input
+                if (normalizedInput.includes('dy/dx')) {
+                    const parts = normalizedInput.split('dy/dx=');
+                    if (parts.length < 2) throw new Error("Invalid format. Use 'dy/dx = f(x,y)'");
+                    
+                    diffEquation = `dy/dx = ${parts[1]}`;
+                    orthogonalDiffEquation = `dy/dx = -1/(${parts[1]})`;
+                    const solution = solveOrthogonalDiffEq(parts[1], true);
+                    finalResult = solution.finalResult;
+                    solvingSteps = solution.solvingSteps;
+                } else if (normalizedInput.includes('dr/dθ')) {
+                    const parts = normalizedInput.split('dr/dθ=');
+                    if (parts.length < 2) throw new Error("Invalid format. Use 'dr/dθ = f(r,θ)'");
+                    
+                    diffEquation = `dr/dθ = ${parts[1]}`;
+                    orthogonalDiffEquation = `dr/dθ = -1/(${parts[1]})`;
+                    const solution = solveOrthogonalDiffEq(parts[1], true);
+                    finalResult = solution.finalResult;
+                    solvingSteps = solution.solvingSteps;
+                }
+            } else {
+                // Handle family of curves input
+                if (!normalizedInput.includes('c')) {
+                    throw new Error("Equation should contain constant 'C'. Use format like 'y = Cx²' or 'r = Cθ'");
+                }
+                
+                const diffResult = eliminateConstant(normalizedInput);
+                diffEquation = diffResult.diffEq;
+                orthogonalDiffEquation = diffResult.orthogonalDiffEq;
+                
+                const solution = solveOrthogonalDiffEq(diffResult.orthogonalSlope, false);
+                finalResult = solution.finalResult;
+                solvingSteps = solution.solvingSteps;
+            }
+            
+            return {
+                originalEquation,
+                diffEquation,
+                orthogonalDiffEquation,
+                solvingSteps,
+                finalResult,
+                normalizedInput
+            };
+        }
+        
+        function eliminateConstant(equation) {
+            let diffEq, orthogonalSlope, orthogonalDiffEq;
+            
+            // Predefined equation patterns
+            const patterns = {
+                // Cartesian equations
+                'y=cx^2': { diff: 'dy/dx = 2y/x', slope: '-x/(2y)', orth: 'dy/dx = -x/(2y)' },
+                'x^2+y^2=c': { diff: 'dy/dx = -x/y', slope: 'y/x', orth: 'dy/dx = y/x' },
+                'y=c/x': { diff: 'dy/dx = -y/x', slope: 'x/y', orth: 'dy/dx = x/y' },
+                'y=ce^x': { diff: 'dy/dx = y', slope: '-1/y', orth: 'dy/dx = -1/y' },
+                'y^2=cx^3': { diff: 'dy/dx = (3y)/(2x)', slope: '-(2x)/(3y)', orth: 'dy/dx = -(2x)/(3y)' },
+                'y^2=cx': { diff: 'dy/dx = y/(2x)', slope: '-2x/y', orth: 'dy/dx = -2x/y' },
+                'y=cx^n': { diff: 'dy/dx = (n*y)/x', slope: '-x/(n*y)', orth: 'dy/dx = -x/(n*y)' },
+                // Polar equations
+                'r=ctheta': { diff: 'dr/dθ = r/θ', slope: '-θ/r', orth: 'dr/dθ = -θ/r' },
+                'r=ce^θ': { diff: 'dr/dθ = r', slope: '-1/r', orth: 'dr/dθ = -1/r' },
+                'r=csin(θ)': { diff: 'dr/dθ = r·cot(θ)', slope: '-tan(θ)/r', orth: 'dr/dθ = -tan(θ)/r' },
+                'r=ccos(θ)': { diff: 'dr/dθ = -r·tan(θ)', slope: 'cot(θ)/r', orth: 'dr/dθ = cot(θ)/r' }
+            };
+            
+            for (const [pattern, equations] of Object.entries(patterns)) {
+                if (equation.includes(pattern)) {
+                    diffEq = equations.diff;
+                    orthogonalSlope = equations.slope;
+                    orthogonalDiffEq = equations.orth;
+                    break;
+                }
+            }
+            
+            if (!diffEq) {
+                throw new Error("Unsupported equation format. Please use one of the example equations.");
+            }
+            
+            return { diffEq, orthogonalSlope, orthogonalDiffEq };
+        }
+        
+        function solveOrthogonalDiffEq(slope, isDiffEqInput) {
+            const solutions = {
+                // Cartesian equations
+                '-x/(2y)': {
+                    steps: [
+                        "Separate variables: 2y dy = -x dx",
+                        "Integrate: ∫2y dy = ∫-x dx",
+                        "Result: y² = -x²/2 + K",
+                        "Final: x²/2 + y² = C"
+                    ],
+                    result: "x²/2 + y² = C"
+                },
+                'y/x': {
+                    steps: [
+                        "Separate variables: dy/y = dx/x",
+                        "Integrate: ∫dy/y = ∫dx/x",
+                        "Result: ln|y| = ln|x| + K",
+                        "Final: y = Cx"
+                    ],
+                    result: "y = Cx"
+                },
+                'x/y': {
+                    steps: [
+                        "Separate variables: y dy = x dx",
+                        "Integrate: ∫y dy = ∫x dx",
+                        "Result: y²/2 = x²/2 + K",
+                        "Final: y² = x² + C"
+                    ],
+                    result: "y² = x² + C"
+                },
+                '-1/y': {
+                    steps: [
+                        "Separate variables: y dy = -dx",
+                        "Integrate: ∫y dy = ∫-dx",
+                        "Result: y²/2 = -x + K",
+                        "Final: y² = -2x + C"
+                    ],
+                    result: "y² = -2x + C"
+                },
+                '-(2x)/(3y)': {
+                    steps: [
+                        "Separate variables: 3y dy = -2x dx",
+                        "Integrate: ∫3y dy = ∫-2x dx",
+                        "Result: (3/2)y² = -x² + K",
+                        "Final: 3y²/2 + x² = C"
+                    ],
+                    result: "3y²/2 + x² = C"
+                },
+                '-2x/y': {
+                    steps: [
+                        "Separate variables: y dy = -2x dx",
+                        "Integrate: ∫y dy = ∫-2x dx",
+                        "Result: y²/2 = -x² + K",
+                        "Final: y² = -2x² + C"
+                    ],
+                    result: "y² = -2x² + C"
+                },
+                // Polar equations
+                '-θ/r': {
+                    steps: [
+                        "Separate variables: r dr = -θ dθ",
+                        "Integrate: ∫r dr = -∫θ dθ",
+                        "Result: r²/2 = -θ²/2 + K",
+                        "Final: r² + θ² = C"
+                    ],
+                    result: "r² + θ² = C"
+                },
+                '-1/r': {
+                    steps: [
+                        "Separate variables: r dr = -dθ",
+                        "Integrate: ∫r dr = -∫dθ",
+                        "Result: r²/2 = -θ + K",
+                        "Final: r² = -2θ + C"
+                    ],
+                    result: "r² = -2θ + C"
+                }
+            };
+            
+            let solution = solutions[slope];
+            
+            if (!solution) {
+                // Generic solution for other equations
+                solution = {
+                    steps: [
+                        `Given: ${slope.includes('dθ') ? 'dr/dθ' : 'dy/dx'} = ${slope}`,
+                        "Separate variables if possible",
+                        "Integrate both sides",
+                        "Solve for the orthogonal trajectory"
+                    ],
+                    result: `Orthogonal trajectory: Solve ${slope.includes('dθ') ? 'dr/dθ' : 'dy/dx'} = ${slope}`
+                };
+            }
+            
+            return {
+                finalResult: solution.result,
+                solvingSteps: solution.steps.join(" → ")
+            };
+        }
+        
+        // Display Results
+        function displayResults(result) {
+            originalEquation.innerHTML = formatEquation(result.originalEquation);
+            diffEquation.innerHTML = formatEquation(result.diffEquation);
+            orthogonalDiffEquation.innerHTML = formatEquation(result.orthogonalDiffEquation);
+            solvingSteps.innerHTML = result.solvingSteps;
+            finalResult.innerHTML = formatEquation(result.finalResult);
+        }
+        
+        function formatEquation(equation) {
+            return equation
+                .replace(/\^2/g, '<sup>2</sup>')
+                .replace(/\^3/g, '<sup>3</sup>')
+                .replace(/\^n/g, '<sup>n</sup>')
+                .replace(/\^x/g, '<sup>x</sup>')
+                .replace(/\^θ/g, '<sup>θ</sup>')
+                .replace(/theta/g, 'θ')
+                .replace(/dx/g, '<i>dx</i>')
+                .replace(/dy/g, '<i>dy</i>')
+                .replace(/dr/g, '<i>dr</i>')
+                .replace(/dθ/g, '<i>dθ</i>')
+                .replace(/dy\/dx/g, '<i>dy/dx</i>')
+                .replace(/dr\/dθ/g, '<i>dr/dθ</i>')
+                .replace(/C/g, '<span style="color: #4fc3a1">C</span>')
+                .replace(/K/g, '<span style="color: #4fc3a1">K</span>')
+                .replace(/e\^x/g, 'e<sup>x</sup>')
+                .replace(/e\^θ/g, 'e<sup>θ</sup>')
+                .replace(/ln\|/g, 'ln|')
+                .replace(/sin\(/g, 'sin(')
+                .replace(/cos\(/g, 'cos(')
+                .replace(/tan\(/g, 'tan(')
+                .replace(/cot\(/g, 'cot(')
+                .replace(/\//g, '/')
+                .replace(/\*/g, '·');
+        }
+        
+        // Graph Generation
+        function generateCompleteGraph(result) {
+            currentGraphData = result;
+            const numCurves = parseInt(curveDensitySlider.value);
+            
+            const graphDiv = document.getElementById('graph');
+            graphDiv.innerHTML = '';
+            
+            const traces = [];
+            
+            // Determine ranges based on equation type
+            let xRange = [-5, 5];
+            let yRange = [-5, 5];
+            let isPolar = result.normalizedInput.includes('r=') || result.normalizedInput.includes('dr/dθ');
+            
+            // Adjust ranges for specific equation types
+            const rangeConfigs = {
+                'x^2+y^2=c': { x: [-6, 6], y: [-6, 6] },
+                'y=cx^2': { x: [-3, 3], y: [-2, 8] },
+                'y=ce^x': { x: [-3, 3], y: [-2, 10] },
+                'y=c/x': { x: [-4, 4], y: [-4, 4] },
+                'y^2=cx^3': { x: [-4, 4], y: [-6, 6] },
+                'y^2=cx': { x: [-4, 4], y: [-4, 4] }
+            };
+            
+            for (const [pattern, ranges] of Object.entries(rangeConfigs)) {
+                if (result.normalizedInput.includes(pattern)) {
+                    xRange = ranges.x;
+                    yRange = ranges.y;
+                    break;
+                }
+            }
+            
+            if (isPolar) {
+                xRange = [-6, 6];
+                yRange = [-6, 6];
+            }
+            
+            // Generate C values (positive and negative)
+            let cValues = [];
+            const baseValues = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4];
+            
+            for (let i = 0; i < numCurves && i < baseValues.length; i++) {
+                cValues.push(baseValues[i]);
+            }
+            
+            // Generate data points
+            const step = 0.05;
+            
+            // Plot original family
+            if (showOriginal) {
+                cValues.forEach((c, index) => {
+                    const opacity = 0.7 - (index * 0.1);
+                    const xData = [];
+                    const yData = [];
+                    
+                    if (isPolar) {
+                        generatePolarData(c, result.normalizedInput, xData, yData, step, xRange, yRange);
+                    } else {
+                        generateCartesianData(c, result.normalizedInput, xData, yData, step, xRange, yRange);
+                    }
+                    
+                    if (xData.length > 0) {
+                        traces.push({
+                            x: xData,
+                            y: yData,
+                            mode: 'lines',
+                            name: `Original C=${c}`,
+                            line: { 
+                                color: '#4a6fa5', 
+                                width: 2,
+                                opacity: opacity
+                            },
+                            showlegend: false,
+                            opacity: opacity
+                        });
+                    }
+                });
+            }
+            
+            // Plot orthogonal trajectories
+            if (showOrthogonal) {
+                cValues.forEach((c, index) => {
+                    const opacity = 0.8 - (index * 0.1);
+                    const xData = [];
+                    const yData = [];
+                    
+                    if (isPolar) {
+                        generateOrthogonalPolarData(c, result.normalizedInput, xData, yData, step, xRange, yRange);
+                    } else {
+                        generateOrthogonalCartesianData(c, result.normalizedInput, xData, yData, step, xRange, yRange);
+                    }
+                    
+                    if (xData.length > 0) {
+                        traces.push({
+                            x: xData,
+                            y: yData,
+                            mode: 'lines',
+                            name: `Orthogonal C=${c}`,
+                            line: { 
+                                color: '#e74c3c', 
+                                width: 2,
+                                dash: 'dash',
+                                opacity: opacity
+                            },
+                            showlegend: false,
+                            opacity: opacity
+                        });
+                    }
+                });
+            }
+            
+            // Layout configuration
+            const layout = {
+                title: {
+                    text: 'Family of Curves & Orthogonal Trajectories',
+                    font: { 
+                        size: 16, 
+                        color: isDarkMode ? '#f8f9fa' : '#333',
+                        family: 'Arial, sans-serif'
+                    }
+                },
+                xaxis: {
+                    title: {
+                        text: 'x',
+                        font: { size: 14, color: isDarkMode ? '#f8f9fa' : '#333' }
+                    },
+                    range: xRange,
+                    gridcolor: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                    zerolinecolor: isDarkMode ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)',
+                    showgrid: true,
+                    zeroline: true,
+                    showline: true,
+                    linecolor: isDarkMode ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)'
+                },
+                yaxis: {
+                    title: {
+                        text: 'y',
+                        font: { size: 14, color: isDarkMode ? '#f8f9fa' : '#333' }
+                    },
+                    range: yRange,
+                    gridcolor: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                    zerolinecolor: isDarkMode ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)',
+                    showgrid: true,
+                    zeroline: true,
+                    showline: true,
+                    linecolor: isDarkMode ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)',
+                    scaleanchor: 'x',
+                    scaleratio: 1
+                },
+                plot_bgcolor: isDarkMode ? 'rgba(30, 30, 46, 0.8)' : 'rgba(255, 255, 255, 0.9)',
+                paper_bgcolor: 'transparent',
+                font: { 
+                    color: isDarkMode ? '#f8f9fa' : '#333',
+                    family: 'Arial, sans-serif'
+                },
+                showlegend: false,
+                margin: { t: 50, r: 20, b: 60, l: 60 },
+                hovermode: 'closest'
+            };
+            
+            // Plot the graph
+            Plotly.newPlot('graph', traces, layout, {
+                responsive: true,
+                displayModeBar: true,
+                displaylogo: false,
+                modeBarButtonsToRemove: ['lasso2d', 'select2d', 'toggleSpikelines'],
+                scrollZoom: true,
+                showTips: true
+            });
+            
+            updateToggleButtons();
+        }
+        
+        function generatePolarData(c, equation, xData, yData, step, xRange, yRange) {
+            for (let theta = 0; theta <= 2 * Math.PI; theta += step) {
+                let r = 0;
+                
+                if (equation.includes('r=ctheta')) {
+                    r = c * theta;
+                } else if (equation.includes('r=ce^θ')) {
+                    r = c * Math.exp(theta);
+                } else if (equation.includes('r=csin(θ)')) {
+                    r = c * Math.sin(theta);
+                } else if (equation.includes('r=ccos(θ)')) {
+                    r = c * Math.cos(theta);
+                }
+                
+                const x = r * Math.cos(theta);
+                const y = r * Math.sin(theta);
+                
+                if (Math.abs(x) <= xRange[1] && Math.abs(y) <= yRange[1]) {
+                    xData.push(x);
+                    yData.push(y);
+                }
+            }
+        }
+        
+        function generateCartesianData(c, equation, xData, yData, step, xRange, yRange) {
+            const generateBranch = (x, calculateY) => {
+                const y = calculateY(x);
+                if (isFinite(y) && Math.abs(y) <= yRange[1]) {
+                    xData.push(x);
+                    yData.push(y);
+                }
+            };
+            
+            for (let x = xRange[0]; x <= xRange[1]; x += step) {
+                if (equation.includes('y=cx^2')) {
+                    generateBranch(x, (x) => c * x * x);
+                } else if (equation.includes('x^2+y^2=c')) {
+                    if (c > 0) {
+                        const radius = Math.sqrt(c);
+                        if (Math.abs(x) <= radius) {
+                            const yPos = Math.sqrt(c - x*x);
+                            const yNeg = -Math.sqrt(c - x*x);
+                            generateBranch(x, () => yPos);
+                            generateBranch(x, () => yNeg);
+                        }
+                    }
+                } else if (equation.includes('y=c/x')) {
+                    if (Math.abs(x) > 0.1) {
+                        generateBranch(x, (x) => c / x);
+                    }
+                } else if (equation.includes('y=ce^x')) {
+                    generateBranch(x, (x) => c * Math.exp(x));
+                } else if (equation.includes('y^2=cx^3')) {
+                    if (c * x * x * x >= 0) {
+                        const yPos = Math.sqrt(c * x * x * x);
+                        const yNeg = -Math.sqrt(c * x * x * x);
+                        generateBranch(x, () => yPos);
+                        generateBranch(x, () => yNeg);
+                    }
+                } else if (equation.includes('y^2=cx')) {
+                    if (c * x >= 0) {
+                        const yPos = Math.sqrt(c * x);
+                        const yNeg = -Math.sqrt(c * x);
+                        generateBranch(x, () => yPos);
+                        generateBranch(x, () => yNeg);
+                    }
+                }
+            }
+        }
+        
+        function generateOrthogonalPolarData(c, equation, xData, yData, step, xRange, yRange) {
+            for (let theta = 0; theta <= 2 * Math.PI; theta += step) {
+                let r = 0;
+                
+                if (equation.includes('r=ctheta')) {
+                    const term = c - theta*theta;
+                    if (term >= 0) {
+                        r = Math.sqrt(term);
+                        const x = r * Math.cos(theta);
+                        const y = r * Math.sin(theta);
+                        const xNeg = -r * Math.cos(theta);
+                        const yNeg = -r * Math.sin(theta);
+                        
+                        if (Math.abs(x) <= xRange[1] && Math.abs(y) <= yRange[1]) {
+                            xData.push(x);
+                            yData.push(y);
+                        }
+                        if (Math.abs(xNeg) <= xRange[1] && Math.abs(yNeg) <= yRange[1]) {
+                            xData.push(xNeg);
+                            yData.push(yNeg);
+                        }
+                    }
+                } else if (equation.includes('r=ce^θ')) {
+                    const term = c - 2*theta;
+                    if (term >= 0) {
+                        r = Math.sqrt(term);
+                        const x = r * Math.cos(theta);
+                        const y = r * Math.sin(theta);
+                        if (Math.abs(x) <= xRange[1] && Math.abs(y) <= yRange[1]) {
+                            xData.push(x);
+                            yData.push(y);
+                        }
+                    }
+                }
+            }
+        }
+        
+        function generateOrthogonalCartesianData(c, equation, xData, yData, step, xRange, yRange) {
+            const generateBranch = (x, calculateY) => {
+                const y = calculateY(x);
+                if (isFinite(y) && Math.abs(y) <= yRange[1]) {
+                    xData.push(x);
+                    yData.push(y);
+                }
+            };
+            
+            if (equation.includes('y=cx^2')) {
+                if (c > 0) {
+                    const a = Math.sqrt(2*c);
+                    const b = Math.sqrt(c);
+                    for (let angle = 0; angle <= 2 * Math.PI; angle += step) {
+                        const x = a * Math.cos(angle);
+                        const y = b * Math.sin(angle);
+                        generateBranch(x, () => y);
+                    }
+                }
+            } else if (equation.includes('x^2+y^2=c')) {
+                for (let x = xRange[0]; x <= xRange[1]; x += step) {
+                    generateBranch(x, (x) => c * x);
+                }
+            } else if (equation.includes('y=c/x')) {
+                for (let x = xRange[0]; x <= xRange[1]; x += step) {
+                    const term = x*x + c;
+                    if (term >= 0) {
+                        const yPos = Math.sqrt(term);
+                        const yNeg = -Math.sqrt(term);
+                        generateBranch(x, () => yPos);
+                        generateBranch(x, () => yNeg);
+                    }
+                }
+            } else if (equation.includes('y=ce^x')) {
+                for (let x = xRange[0]; x <= xRange[1]; x += step) {
+                    const term = c - 2*x;
+                    if (term >= 0) {
+                        const yPos = Math.sqrt(term);
+                        const yNeg = -Math.sqrt(term);
+                        generateBranch(x, () => yPos);
+                        generateBranch(x, () => yNeg);
+                    }
+                }
+            } else if (equation.includes('y^2=cx^3')) {
+                if (c > 0) {
+                    for (let angle = 0; angle <= 2 * Math.PI; angle += step) {
+                        const x = Math.sqrt(c) * Math.cos(angle);
+                        const y = Math.sqrt(2*c/3) * Math.sin(angle);
+                        generateBranch(x, () => y);
+                    }
+                }
+            } else if (equation.includes('y^2=cx')) {
+                for (let x = xRange[0]; x <= xRange[1]; x += step) {
+                    const term = c - 2*x*x;
+                    if (term >= 0) {
+                        const yPos = Math.sqrt(term);
+                        const yNeg = -Math.sqrt(term);
+                        generateBranch(x, () => yPos);
+                        generateBranch(x, () => yNeg);
+                    }
+                }
+            }
+        }
+        
+        // Utility Functions
+        function clearResults() {
+            originalEquation.innerHTML = 'Enter an equation and click "Calculate"';
+            diffEquation.innerHTML = '-';
+            orthogonalDiffEquation.innerHTML = '-';
+            solvingSteps.innerHTML = '-';
+            finalResult.innerHTML = 'Result will appear here after calculation';
+            
+            const graphDiv = document.getElementById('graph');
+            graphDiv.innerHTML = '<div class="graph-placeholder"><i class="fas fa-chart-line"></i><p>Complete graph will appear here after calculation</p><p style="font-size: 0.9rem; margin-top: 10px;">Showing both positive and negative values for complete visualization</p></div>';
+            
+            showOriginal = true;
+            showOrthogonal = true;
+            updateToggleButtons();
+        }
+        
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.style.display = 'flex';
+            loadingIndicator.style.display = 'none';
+            
+            // Auto-hide error after 5 seconds
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
+        }
+        
+        function showNotification(message) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `
+                <i class="fas fa-check-circle" style="color: #4fc3a1; margin-right: 10px;"></i>
+                <span>${message}</span>
+            `;
+            
+            // Style the notification
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--dark-color);
+                color: var(--text-light);
+                padding: 15px 20px;
+                border-radius: var(--border-radius);
+                box-shadow: var(--box-shadow);
+                display: flex;
+                align-items: center;
+                z-index: 1000;
+                animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+                border-left: 4px solid var(--accent-color);
+            `;
+            
+            // Add keyframes for animations
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideInRight {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes fadeOut {
+                    from { opacity: 1; }
+                    to { opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 3000);
+        }
+        
+        // Footer Link Handlers
+        function showAbout() {
+            alert("Orthogonal Trajectory Calculator\n\nThis educational tool helps engineering students visualize and compute orthogonal trajectories of various curve families. It provides step-by-step solutions and interactive graphs for better understanding of mathematical concepts.");
+        }
+        
+        function showExamples() {
+            alert("Try these examples:\n\n1. y = Cx² → Ellipses: x²/2 + y² = C\n2. x² + y² = C → Lines: y = Cx\n3. y = C/x → Hyperbolas: y² = x² + C\n4. y = Ceˣ → Parabolas: y² = -2x + C\n5. r = Cθ → Circles: r² + θ² = C");
+        }
+        
+        function showTutorial() {
+            alert("Tutorial:\n\n1. Enter a family of curves (must include constant C)\n2. Click 'Calculate' to see step-by-step solution\n3. Use graph controls to customize visualization\n4. Toggle between original and orthogonal families\n5. Adjust number of curves for clearer view");
+        }
+        
+        function printPage() {
+            window.print();
+        }
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (currentGraphData) {
+                setTimeout(() => {
+                    generateCompleteGraph(currentGraphData);
+                }, 200);
+            }
+        });
+        
+        // Handle page visibility change
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && currentGraphData) {
+                generateCompleteGraph(currentGraphData);
+            }
+        });
+    </script>
 </body>
 </html>

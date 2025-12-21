@@ -24,6 +24,10 @@
             --text-light: #666666;
             --border-radius: 10px;
             --shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            --correct-color: #4CAF50;
+            --incorrect-color: #f44336;
+            --partial-color: #FF9800;
+            --mentor-color: #9C27B0;
         }
 
         body {
@@ -152,9 +156,19 @@
             text-align: center;
         }
 
-        .aim-visual i {
-            font-size: 12rem;
-            color: var(--light-blue);
+        .heat-conduction-img {
+            width: 100%;
+            max-width: 400px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border: 1px solid #ddd;
+        }
+
+        .img-caption {
+            margin-top: 1rem;
+            font-style: italic;
+            color: var(--text-light);
+            font-size: 0.9rem;
         }
 
         /* Theory Section */
@@ -204,6 +218,95 @@
             color: var(--primary-blue);
         }
 
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background-color: var(--secondary-blue);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background-color: var(--light-bg);
+        }
+
+        /* Cylindrical Pipe Diagram */
+        .pipe-diagram {
+            margin: 2rem 0;
+            text-align: center;
+            background-color: var(--light-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+        }
+
+        /* Calculation Steps */
+        .calculation-steps {
+            background-color: #f9f9f9;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--partial-color);
+        }
+
+        .step {
+            display: flex;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px dashed #ddd;
+        }
+
+        .step:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .step-number {
+            background-color: var(--primary-blue);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-example {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 0.8rem;
+            border-left: 3px solid var(--light-blue);
+        }
+
+        .example-title {
+            font-weight: 600;
+            color: var(--secondary-blue);
+            margin-bottom: 0.5rem;
+        }
+
         /* Test Sections */
         .question {
             background-color: var(--light-bg);
@@ -224,6 +327,8 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
         }
 
         .option:hover {
@@ -232,6 +337,13 @@
 
         .option input {
             margin-right: 0.8rem;
+        }
+
+        .option-label {
+            font-weight: 500;
+            margin-right: 8px;
+            width: 25px;
+            text-align: center;
         }
 
         .submit-btn {
@@ -249,6 +361,126 @@
 
         .submit-btn:hover {
             background-color: var(--secondary-blue);
+        }
+
+        /* Test Results */
+        .results-container {
+            background-color: var(--light-bg);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--light-blue);
+        }
+
+        .score-display {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            background-color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .score-percentage {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-right: 0.5rem;
+        }
+
+        .score-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+
+        .result-item {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: white;
+        }
+
+        .correct-answer {
+            background-color: rgba(76, 175, 80, 0.1);
+            border-left: 4px solid var(--correct-color);
+        }
+
+        .incorrect-answer {
+            background-color: rgba(244, 67, 54, 0.1);
+            border-left: 4px solid var(--incorrect-color);
+        }
+
+        .result-question {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-answer {
+            display: flex;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+
+        .answer-status {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-right: 0.8rem;
+        }
+
+        .correct {
+            background-color: var(--correct-color);
+            color: white;
+        }
+
+        .incorrect {
+            background-color: var(--incorrect-color);
+            color: white;
+        }
+
+        .feedback-message {
+            margin-top: 0.8rem;
+            padding: 0.8rem;
+            border-radius: 5px;
+            background-color: rgba(94, 168, 242, 0.1);
+            font-style: italic;
+        }
+
+        .retake-btn {
+            background-color: var(--light-blue);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .retake-btn:hover {
+            background-color: var(--accent-blue);
+        }
+
+        .improvement-notice {
+            background-color: rgba(255, 152, 0, 0.1);
+            border-left: 4px solid var(--partial-color);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 1rem;
         }
 
         /* Simulation Section */
@@ -292,37 +524,166 @@
             border-radius: var(--border-radius);
         }
 
-        /* Contributors Section */
-        .contributors-grid {
+        /* Contributors Section - Updated */
+        .contributors-section {
+            background-color: var(--light-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .team-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 2rem;
             margin-top: 1.5rem;
         }
 
-        .contributor-card {
+        .mentor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .team-member-card {
             text-align: center;
-            background-color: var(--light-bg);
+            background-color: white;
             padding: 1.5rem;
             border-radius: var(--border-radius);
             transition: transform 0.3s ease;
+            box-shadow: var(--shadow);
         }
 
-        .contributor-card:hover {
+        .team-member-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
 
-        .contributor-img {
+        .mentor-card {
+            text-align: center;
+            background-color: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            transition: transform 0.3s ease;
+            box-shadow: var(--shadow);
+            border-top: 5px solid var(--mentor-color);
+        }
+
+        .mentor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .member-img {
             width: 120px;
             height: 120px;
             border-radius: 50%;
             margin: 0 auto 1rem;
-            background-color: var(--accent-blue);
+            background: linear-gradient(135deg, var(--light-blue) 0%, var(--accent-blue) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-size: 3rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .mentor-img {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, var(--mentor-color) 0%, #BA68C8 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .member-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .mentor-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--mentor-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .member-role {
+            font-size: 1rem;
+            color: var(--secondary-blue);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .mentor-role {
+            font-size: 1.1rem;
+            color: var(--mentor-color);
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+        }
+
+        .member-department {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .mentor-department {
+            font-size: 1rem;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .member-skills {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .mentor-expertise {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            margin-top: 0.8rem;
+            line-height: 1.5;
+            background-color: rgba(156, 39, 176, 0.05);
+            padding: 0.8rem;
+            border-radius: 8px;
+        }
+
+        .team-section-title {
+            color: var(--primary-blue);
+            text-align: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light-blue);
+        }
+
+        .mentor-section-title {
+            color: var(--mentor-color);
+            text-align: center;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--mentor-color);
+        }
+
+        .team-description {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            color: var(--text-dark);
+            line-height: 1.6;
         }
 
         /* Feedback Section */
@@ -365,6 +726,39 @@
             text-align: center;
             padding: 1.5rem;
             margin-top: 3rem;
+            border-top: 3px solid var(--accent-blue);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .footer-department {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+        }
+
+        .footer-purpose {
+            font-size: 1rem;
+            opacity: 0.8;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        .footer-copyright {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.7;
         }
 
         /* Responsive Design */
@@ -393,8 +787,33 @@
                 padding: 1.5rem;
             }
 
-            .aim-visual i {
-                font-size: 8rem;
+            .heat-conduction-img {
+                max-width: 300px;
+            }
+
+            .score-display {
+                font-size: 1.5rem;
+                padding: 0.4rem 1rem;
+            }
+
+            .score-percentage {
+                font-size: 2rem;
+            }
+
+            .aim-content, .theory-grid {
+                flex-direction: column;
+            }
+            
+            .footer-logo {
+                font-size: 1.5rem;
+            }
+            
+            .footer-department {
+                font-size: 1.1rem;
+            }
+            
+            .team-grid, .mentor-grid {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -403,12 +822,42 @@
                 padding: 1rem;
             }
 
-            .aim-visual i {
-                font-size: 6rem;
+            .heat-conduction-img {
+                max-width: 250px;
             }
 
             .formula {
                 font-size: 1.4rem;
+            }
+
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .score-display {
+                margin-top: 1rem;
+                align-self: flex-end;
+            }
+            
+            .step {
+                flex-direction: column;
+            }
+            
+            .step-number {
+                margin-bottom: 0.5rem;
+            }
+            
+            .footer-logo {
+                font-size: 1.3rem;
+            }
+            
+            .footer-department {
+                font-size: 1rem;
+            }
+            
+            .footer-purpose {
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -417,7 +866,7 @@
     <!-- Header -->
     <header>
         <h1>Visual Lab: Heat Conduction</h1>
-        <p>An interactive virtual laboratory for studying Fourier's Law of Heat Conduction</p>
+        <p>An interactive virtual laboratory for studying Fourier's Law of Heat Conduction in Plane Walls and Cylindrical Pipes</p>
     </header>
 
     <!-- Navigation -->
@@ -441,22 +890,69 @@
             <h2><i class="fas fa-bullseye"></i> Aim of the Experiment</h2>
             <div class="aim-content">
                 <div class="aim-text">
-                    <p>This virtual laboratory experiment aims to help engineering students understand and visualize the fundamental principles of heat conduction through solids, as described by Fourier's Law of Heat Conduction.</p>
+                    <p>This virtual laboratory experiment aims to help engineering students understand and visualize the fundamental principles of heat conduction through different geometries, specifically plane walls and cylindrical pipes, as described by Fourier's Law of Heat Conduction.</p>
                     
                     <h3>Learning Objectives:</h3>
                     <ul>
                         <li>Understand the mechanism of heat conduction in solids</li>
-                        <li>Comprehend Fourier's Law and its mathematical formulation</li>
-                        <li>Analyze how different materials conduct heat at varying rates</li>
-                        <li>Explore the relationship between temperature gradient, thermal conductivity, and heat transfer rate</li>
-                        <li>Apply the concept to practical engineering problems</li>
+                        <li>Comprehend Fourier's Law and its mathematical formulation for different geometries</li>
+                        <li>Analyze heat conduction through plane walls and cylindrical pipes</li>
+                        <li>Calculate heat transfer rates for composite walls and insulated pipes</li>
+                        <li>Explore practical applications in engineering systems</li>
+                        <li>Understand radial heat flow in cylindrical coordinates</li>
                     </ul>
                     
-                    <p>By the end of this experiment, students should be able to predict heat transfer rates through different materials and understand the factors affecting thermal conduction in engineering applications.</p>
+                    <p>By the end of this experiment, students should be able to predict heat transfer rates through different materials and geometries, and understand the factors affecting thermal conduction in engineering applications such as building insulation, heat exchangers, and pipeline systems.</p>
                 </div>
                 <div class="aim-visual">
-                    <i class="fas fa-thermometer-full"></i>
-                    <p>Visual representation of heat conduction</p>
+                    <!-- Heat Conduction Diagram -->
+                    <div class="heat-conduction-diagram">
+                        <svg width="400" height="350" viewBox="0 0 400 350" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Cylindrical Pipe Section -->
+                            <text x="200" y="20" text-anchor="middle" font-size="16" font-weight="bold" fill="var(--primary-blue)">Cylindrical Pipe Heat Conduction</text>
+                            
+                            <!-- Outer pipe -->
+                            <circle cx="200" cy="120" r="80" fill="none" stroke="#333" stroke-width="15" stroke-opacity="0.3"/>
+                            <!-- Inner pipe -->
+                            <circle cx="200" cy="120" r="40" fill="none" stroke="#333" stroke-width="15" stroke-opacity="0.3"/>
+                            
+                            <!-- Temperature indicators -->
+                            <text x="120" y="120" text-anchor="middle" font-size="12" fill="#FF6B6B">T₁ (Hot)</text>
+                            <text x="280" y="120" text-anchor="middle" font-size="12" fill="#4D96FF">T₂ (Cold)</text>
+                            
+                            <!-- Heat flow arrows (radial) -->
+                            <line x1="200" y1="40" x2="200" y2="200" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                            <text x="220" y="120" text-anchor="start" font-size="12">Radial Heat Flow (Q)</text>
+                            
+                            <!-- Dimensions -->
+                            <line x1="200" y1="40" x2="280" y2="40" stroke="#333" stroke-width="1"/>
+                            <line x1="200" y1="35" x2="200" y2="45" stroke="#333" stroke-width="1"/>
+                            <line x1="280" y1="35" x2="280" y2="45" stroke="#333" stroke-width="1"/>
+                            <text x="240" y="35" text-anchor="middle" font-size="10">r₂ (Outer Radius)</text>
+                            
+                            <line x1="200" y1="80" x2="240" y2="80" stroke="#333" stroke-width="1"/>
+                            <line x1="200" y1="75" x2="200" y2="85" stroke="#333" stroke-width="1"/>
+                            <line x1="240" y1="75" x2="240" y2="85" stroke="#333" stroke-width="1"/>
+                            <text x="220" y="75" text-anchor="middle" font-size="10">r₁ (Inner Radius)</text>
+                            
+                            <!-- Plane Wall Section -->
+                            <rect x="50" y="230" width="100" height="80" fill="#FFD166" stroke="#333" stroke-width="2"/>
+                            <text x="100" y="220" text-anchor="middle" font-size="12" font-weight="bold">Plane Wall</text>
+                            
+                            <rect x="250" y="230" width="100" height="80" fill="#FFD166" stroke="#333" stroke-width="2"/>
+                            <text x="300" y="220" text-anchor="middle" font-size="12" font-weight="bold">Cylindrical Pipe</text>
+                            
+                            <text x="100" y="320" text-anchor="middle" font-size="11">Linear Heat Flow</text>
+                            <text x="300" y="320" text-anchor="middle" font-size="11">Radial Heat Flow</text>
+                            
+                            <defs>
+                                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+                                </marker>
+                            </defs>
+                        </svg>
+                        <p class="img-caption">Fig. 1: Comparison of heat conduction through plane walls (linear) and cylindrical pipes (radial)</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -464,69 +960,210 @@
         <!-- Theory Section -->
         <section id="theory" class="section">
             <h2><i class="fas fa-book"></i> Theory</h2>
-            <p>Heat conduction is the transfer of thermal energy through a material without any motion of the material as a whole. It occurs when there is a temperature gradient within a body or when two bodies at different temperatures are in direct contact.</p>
+            <p>Heat conduction is the transfer of thermal energy through a material without any motion of the material as a whole. Fourier's Law provides the fundamental relationship governing heat conduction in different geometries.</p>
             
+            <h3>Fourier's Law for Plane Walls</h3>
             <div class="formula-box">
-                <h3>Fourier's Law of Heat Conduction</h3>
                 <div class="formula">Q = -kA(dT/dx)</div>
-                <p>The rate of heat transfer through a material is proportional to the negative gradient of temperature and the area through which heat flows.</p>
+                <p>The rate of heat transfer through a plane wall is proportional to the negative gradient of temperature and the area through which heat flows.</p>
+            </div>
+            
+            <h3>Fourier's Law for Cylindrical Pipes</h3>
+            <div class="formula-box" style="background-color: var(--secondary-blue);">
+                <div class="formula">Q = -kA<sub>r</sub>(dT/dr)</div>
+                <p>For cylindrical coordinates, the heat transfer area varies with radius: A<sub>r</sub> = 2πrL</p>
             </div>
             
             <div class="theory-grid">
                 <div class="theory-card">
-                    <h3>Heat Conduction Mechanism</h3>
-                    <p>In solids, heat conduction occurs through two mechanisms: vibration of molecules (in all materials) and movement of free electrons (primarily in metals). The higher thermal conductivity of metals compared to insulators is due to their free electrons.</p>
+                    <h3>Heat Conduction in Plane Walls</h3>
+                    <p>In plane walls, heat flows in a straight line perpendicular to the surface. The temperature distribution is linear for steady-state conduction with constant thermal conductivity. This geometry is commonly encountered in building walls, flat plates, and slabs.</p>
                 </div>
                 
                 <div class="theory-card">
-                    <h3>Steady vs Unsteady Conduction</h3>
-                    <p>Steady-state conduction occurs when the temperature at each point in the material does not change with time. Unsteady or transient conduction occurs when temperatures change with time, requiring more complex analysis.</p>
+                    <h3>Heat Conduction in Cylindrical Pipes</h3>
+                    <p>In cylindrical pipes, heat flows radially from the inner surface to the outer surface (or vice versa). The temperature distribution is logarithmic, and the heat transfer area increases with radius. This is crucial for pipeline systems, heat exchangers, and insulated cables.</p>
                 </div>
             </div>
             
-            <h3>Variable Definitions</h3>
-            <table class="variable-table">
+            <h3>Comparison of Heat Conduction Geometries</h3>
+            <table class="comparison-table">
                 <thead>
                     <tr>
-                        <th>Symbol</th>
-                        <th>Variable</th>
-                        <th>Unit</th>
-                        <th>Description</th>
+                        <th>Aspect</th>
+                        <th>Plane Wall</th>
+                        <th>Cylindrical Pipe</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Q</td>
-                        <td>Heat transfer rate</td>
-                        <td>W (Watts)</td>
-                        <td>Rate of thermal energy transfer</td>
+                        <td><strong>Coordinate System</strong></td>
+                        <td>Cartesian (x, y, z)</td>
+                        <td>Cylindrical (r, θ, z)</td>
                     </tr>
                     <tr>
-                        <td>k</td>
-                        <td>Thermal conductivity</td>
-                        <td>W/m·K</td>
-                        <td>Material property indicating ability to conduct heat</td>
+                        <td><strong>Heat Flow Direction</strong></td>
+                        <td>Linear (one-dimensional)</td>
+                        <td>Radial (one-dimensional)</td>
                     </tr>
                     <tr>
-                        <td>A</td>
-                        <td>Cross-sectional area</td>
-                        <td>m²</td>
-                        <td>Area perpendicular to heat flow direction</td>
+                        <td><strong>Temperature Distribution</strong></td>
+                        <td>Linear: T(x) = T₁ + (T₂ - T₁)(x/L)</td>
+                        <td>Logarithmic: T(r) = T₁ + (T₂ - T₁)[ln(r/r₁)/ln(r₂/r₁)]</td>
                     </tr>
                     <tr>
-                        <td>dT/dx</td>
-                        <td>Temperature gradient</td>
-                        <td>K/m</td>
-                        <td>Rate of temperature change with distance</td>
+                        <td><strong>Heat Transfer Area</strong></td>
+                        <td>Constant (A)</td>
+                        <td>Varies with radius: A(r) = 2πrL</td>
                     </tr>
                     <tr>
-                        <td>-</td>
-                        <td>Negative sign</td>
-                        <td>-</td>
-                        <td>Indicates heat flows from high to low temperature</td>
+                        <td><strong>Heat Transfer Rate</strong></td>
+                        <td>Q = kA(T₁ - T₂)/L</td>
+                        <td>Q = 2πkL(T₁ - T₂)/ln(r₂/r₁)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Thermal Resistance</strong></td>
+                        <td>R = L/(kA)</td>
+                        <td>R = ln(r₂/r₁)/(2πkL)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Typical Applications</strong></td>
+                        <td>Building walls, flat plates, slabs</td>
+                        <td>Pipelines, heat exchangers, insulated cables</td>
                     </tr>
                 </tbody>
             </table>
+            
+            <h3>Heat Conduction Through Cylindrical Pipes</h3>
+            <p>For a long cylindrical pipe with inner radius r₁, outer radius r₂, length L, and constant thermal conductivity k, the heat transfer rate under steady-state conditions is given by:</p>
+            
+            <div class="formula-box">
+                <div class="formula">Q = [2πkL(T₁ - T₂)] / [ln(r₂/r₁)]</div>
+                <p>Where T₁ is the temperature at inner radius r₁, and T₂ is the temperature at outer radius r₂.</p>
+            </div>
+            
+            <div class="pipe-diagram">
+                <h4>Radial Heat Conduction in Cylindrical Pipe</h4>
+                <svg width="400" height="200" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Pipe cross-section -->
+                    <circle cx="200" cy="100" r="70" fill="none" stroke="#333" stroke-width="20" stroke-opacity="0.2"/>
+                    <circle cx="200" cy="100" r="30" fill="none" stroke="#333" stroke-width="20" stroke-opacity="0.2"/>
+                    
+                    <!-- Inner and outer surfaces -->
+                    <circle cx="200" cy="100" r="30" fill="none" stroke="#FF6B6B" stroke-width="3"/>
+                    <circle cx="200" cy="100" r="70" fill="none" stroke="#4D96FF" stroke-width="3"/>
+                    
+                    <!-- Labels -->
+                    <text x="200" y="40" text-anchor="middle" font-size="14" font-weight="bold">Cylindrical Pipe Cross-Section</text>
+                    <text x="170" y="100" text-anchor="end" font-size="12" fill="#FF6B6B">T₁ (Hot Fluid)</text>
+                    <text x="230" y="100" text-anchor="start" font-size="12" fill="#4D96FF">T₂ (Cold Environment)</text>
+                    
+                    <!-- Radius indicators -->
+                    <line x1="200" y1="100" x2="230" y2="100" stroke="#333" stroke-width="2" stroke-dasharray="5,5"/>
+                    <line x1="200" y1="100" x2="270" y2="100" stroke="#333" stroke-width="2" stroke-dasharray="5,5"/>
+                    
+                    <text x="215" y="95" text-anchor="middle" font-size="10">r₁</text>
+                    <text x="235" y="95" text-anchor="middle" font-size="10">r₂</text>
+                    
+                    <!-- Heat flow arrows -->
+                    <line x1="230" y1="100" x2="270" y2="100" stroke="#333" stroke-width="3" marker-end="url(#arrowhead2)"/>
+                    <text x="250" y="90" text-anchor="middle" font-size="11">Radial Heat Flow</text>
+                </svg>
+                <p class="img-caption">Fig. 2: Radial heat conduction through a cylindrical pipe wall</p>
+            </div>
+            
+            <h3>Step-by-Step Calculation for Cylindrical Pipes</h3>
+            <div class="calculation-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Identify Known Parameters</h4>
+                        <p>Determine inner radius (r₁), outer radius (r₂), pipe length (L), thermal conductivity (k), and temperature difference (T₁ - T₂).</p>
+                        <div class="step-example">
+                            <div class="example-title">Example:</div>
+                            <p>Steam pipe: r₁ = 0.05 m, r₂ = 0.07 m, L = 10 m<br>
+                            k = 50 W/m·K (steel)<br>
+                            T₁ = 200°C (inner), T₂ = 50°C (outer)</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Calculate Radius Ratio</h4>
+                        <p>Compute the natural logarithm of the radius ratio: ln(r₂/r₁)</p>
+                        <div class="step-example">
+                            <div class="example-title">Example Calculation:</div>
+                            <p>r₂/r₁ = 0.07 / 0.05 = 1.4<br>
+                            ln(1.4) = 0.336</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Apply Cylindrical Conduction Formula</h4>
+                        <p>Substitute values into: Q = [2πkL(T₁ - T₂)] / [ln(r₂/r₁)]</p>
+                        <div class="step-example">
+                            <div class="example-title">Example Calculation:</div>
+                            <p>Q = [2π × 50 × 10 × (200-50)] / [ln(0.07/0.05)]<br>
+                            Q = [2π × 50 × 10 × 150] / 0.336<br>
+                            Q = 471,239 / 0.336 = 1,402,000 W = 1.402 MW</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>Interpret the Result</h4>
+                        <p>The heat loss from the steam pipe is significant. This highlights the importance of insulation for energy efficiency.</p>
+                        <div class="step-example">
+                            <div class="example-title">Interpretation:</div>
+                            <p>Heat loss = 1.402 MW from steam to environment<br>
+                            This represents substantial energy loss requiring insulation.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>Sample Problem: Insulated Pipe</h3>
+            <div class="theory-card">
+                <p><strong>Problem:</strong> A steel pipe (k = 45 W/m·K) with inner radius 50 mm and outer radius 60 mm carries hot fluid at 180°C. The pipe is covered with 40 mm thick insulation (k = 0.1 W/m·K). If the outer surface temperature is 30°C, calculate the heat loss per meter length.</p>
+                
+                <p><strong>Solution:</strong></p>
+                <ol>
+                    <li>Pipe radii: r₁ = 0.05 m, r₂ = 0.06 m</li>
+                    <li>Insulation outer radius: r₃ = 0.06 + 0.04 = 0.10 m</li>
+                    <li>Thermal resistances:
+                        <ul>
+                            <li>Pipe: R₁ = ln(0.06/0.05) / (2π × 45 × 1) = 0.00064 K/W</li>
+                            <li>Insulation: R₂ = ln(0.10/0.06) / (2π × 0.1 × 1) = 0.735 K/W</li>
+                        </ul>
+                    </li>
+                    <li>Total resistance: R<sub>total</sub> = R₁ + R₂ = 0.73564 K/W</li>
+                    <li>Heat loss: Q = ΔT / R<sub>total</sub> = (180-30) / 0.73564 = 203.9 W/m</li>
+                </ol>
+                <p><strong>Interpretation:</strong> The insulation reduces heat loss significantly compared to an uninsulated pipe.</p>
+            </div>
+            
+            <h3>Practical Applications</h3>
+            <div class="theory-grid">
+                <div class="theory-card">
+                    <h4>Pipeline Systems</h4>
+                    <p>Cylindrical pipe heat conduction analysis is essential for designing insulation for oil, gas, and steam pipelines to minimize energy loss and prevent freezing or overheating.</p>
+                </div>
+                <div class="theory-card">
+                    <h4>Heat Exchangers</h4>
+                    <p>Tubular heat exchangers rely on radial heat conduction through pipe walls for efficient heat transfer between fluids in industrial processes.</p>
+                </div>
+                <div class="theory-card">
+                    <h4>Electrical Cables</h4>
+                    <p>Understanding radial heat conduction helps design proper insulation for electrical cables to prevent overheating and ensure safe operation.</p>
+                </div>
+            </div>
         </section>
 
         <!-- Pretest Section -->
@@ -536,73 +1173,157 @@
             
             <form id="pretest-form">
                 <div class="question">
-                    <h4>1. What is the primary mechanism of heat conduction in metals?</h4>
+                    <h4>1. For radial heat conduction in cylindrical pipes, the temperature distribution is:</h4>
                     <div class="option">
                         <input type="radio" id="pretest-q1-a" name="q1" value="a">
-                        <label for="pretest-q1-a">Vibration of atoms</label>
+                        <span class="option-label">A</span>
+                        <label for="pretest-q1-a">Linear</label>
                     </div>
                     <div class="option">
                         <input type="radio" id="pretest-q1-b" name="q1" value="b">
-                        <label for="pretest-q1-b">Movement of free electrons</label>
+                        <span class="option-label">B</span>
+                        <label for="pretest-q1-b">Logarithmic</label>
                     </div>
                     <div class="option">
                         <input type="radio" id="pretest-q1-c" name="q1" value="c">
-                        <label for="pretest-q1-c">Convection currents</label>
+                        <span class="option-label">C</span>
+                        <label for="pretest-q1-c">Exponential</label>
                     </div>
                     <div class="option">
                         <input type="radio" id="pretest-q1-d" name="q1" value="d">
-                        <label for="pretest-q1-d">Radiation emission</label>
+                        <span class="option-label">D</span>
+                        <label for="pretest-q1-d">Sinusoidal</label>
                     </div>
                 </div>
                 
                 <div class="question">
-                    <h4>2. According to Fourier's Law, heat transfer rate is directly proportional to:</h4>
+                    <h4>2. In cylindrical coordinates, heat conduction occurs in which direction?</h4>
                     <div class="option">
                         <input type="radio" id="pretest-q2-a" name="q2" value="a">
-                        <label for="pretest-q2-a">Temperature difference</label>
+                        <span class="option-label">A</span>
+                        <label for="pretest-q2-a">Linear (x-direction)</label>
                     </div>
                     <div class="option">
                         <input type="radio" id="pretest-q2-b" name="q2" value="b">
-                        <label for="pretest-q2-b">Cross-sectional area</label>
+                        <span class="option-label">B</span>
+                        <label for="pretest-q2-b">Radial (r-direction)</label>
                     </div>
                     <div class="option">
                         <input type="radio" id="pretest-q2-c" name="q2" value="c">
-                        <label for="pretest-q2-c">Thermal conductivity</label>
+                        <span class="option-label">C</span>
+                        <label for="pretest-q2-c">Angular (θ-direction)</label>
                     </div>
                     <div class="option">
                         <input type="radio" id="pretest-q2-d" name="q2" value="d">
-                        <label for="pretest-q2-d">All of the above</label>
+                        <span class="option-label">D</span>
+                        <label for="pretest-q2-d">Axial (z-direction)</label>
                     </div>
                 </div>
                 
                 <div class="question">
-                    <h4>3. Which material typically has the highest thermal conductivity?</h4>
+                    <h4>3. For heat conduction through a cylindrical pipe, the heat transfer area:</h4>
                     <div class="option">
                         <input type="radio" id="pretest-q3-a" name="q3" value="a">
-                        <label for="pretest-q3-a">Copper</label>
+                        <span class="option-label">A</span>
+                        <label for="pretest-q3-a">Remains constant</label>
                     </div>
                     <div class="option">
                         <input type="radio" id="pretest-q3-b" name="q3" value="b">
-                        <label for="pretest-q3-b">Wood</label>
+                        <span class="option-label">B</span>
+                        <label for="pretest-q3-b">Decreases with radius</label>
                     </div>
                     <div class="option">
                         <input type="radio" id="pretest-q3-c" name="q3" value="c">
-                        <label for="pretest-q3-c">Glass</label>
+                        <span class="option-label">C</span>
+                        <label for="pretest-q3-c">Increases with radius</label>
                     </div>
                     <div class="option">
                         <input type="radio" id="pretest-q3-d" name="q3" value="d">
-                        <label for="pretest-q3-d">Air</label>
+                        <span class="option-label">D</span>
+                        <label for="pretest-q3-d">Is zero at the center</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <h4>4. The formula for heat conduction through a cylindrical pipe is:</h4>
+                    <div class="option">
+                        <input type="radio" id="pretest-q4-a" name="q4" value="a">
+                        <span class="option-label">A</span>
+                        <label for="pretest-q4-a">Q = kA(T₁ - T₂)/L</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="pretest-q4-b" name="q4" value="b">
+                        <span class="option-label">B</span>
+                        <label for="pretest-q4-b">Q = 2πkL(T₁ - T₂)/ln(r₂/r₁)</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="pretest-q4-c" name="q4" value="c">
+                        <span class="option-label">C</span>
+                        <label for="pretest-q4-c">Q = hA(T₁ - T₂)</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="pretest-q4-d" name="q4" value="d">
+                        <span class="option-label">D</span>
+                        <label for="pretest-q4-d">Q = σA(T₁⁴ - T₂⁴)</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <h4>5. Which of the following is a key difference between plane wall and cylindrical pipe conduction?</h4>
+                    <div class="option">
+                        <input type="radio" id="pretest-q5-a" name="q5" value="a">
+                        <span class="option-label">A</span>
+                        <label for="pretest-q5-a">Heat flow direction</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="pretest-q5-b" name="q5" value="b">
+                        <span class="option-label">B</span>
+                        <label for="pretest-q5-b">Temperature distribution</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="pretest-q5-c" name="q5" value="c">
+                        <span class="option-label">C</span>
+                        <label for="pretest-q5-c">Area variation with position</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="pretest-q5-d" name="q5" value="d">
+                        <span class="option-label">D</span>
+                        <label for="pretest-q5-d">All of the above</label>
                     </div>
                 </div>
                 
                 <button type="button" class="submit-btn" id="submit-pretest">Submit Pretest</button>
             </form>
+            
+            <!-- Pretest Results -->
+            <div id="pretest-results" class="results-container">
+                <div class="results-header">
+                    <h3>Pretest Results</h3>
+                    <div class="score-display">
+                        <span class="score-percentage" id="pretest-score">0%</span>
+                        <span>Score</span>
+                    </div>
+                </div>
+                
+                <div id="pretest-score-text" class="score-text"></div>
+                
+                <div id="pretest-results-details">
+                    <!-- Results will be populated by JavaScript -->
+                </div>
+                
+                <div class="improvement-notice">
+                    <h4><i class="fas fa-lightbulb"></i> Learning Recommendation:</h4>
+                    <p>Review the Theory section before proceeding to the simulation. Pay special attention to the concepts you missed in this pretest.</p>
+                </div>
+                
+                <button class="retake-btn" id="retake-pretest">Retake Pretest</button>
+            </div>
         </section>
 
         <!-- Simulation Section -->
         <section id="simulation" class="section">
             <h2><i class="fas fa-flask"></i> Simulation</h2>
-            <p>Interact with the simulation below to explore heat conduction through different materials. Adjust parameters to see how they affect heat transfer rates.</p>
+            <p>Interact with the simulation below to explore heat conduction through different materials and geometries. Adjust parameters to see how they affect heat transfer rates.</p>
             
             <div class="simulation-container">
                 <!-- Embedded simulation from an external source -->
@@ -618,77 +1339,174 @@
                     <li>Observe how heat flow changes in real-time</li>
                     <li>Note the temperature distribution along the material</li>
                 </ul>
+                <p><strong>Experiment with the simulation to verify the calculation steps from the Theory section! Try to understand how cylindrical geometry differs from plane wall geometry.</strong></p>
+            </div>
+            
+            <div class="theory-card">
+                <h4><i class="fas fa-vial"></i> Virtual Experiment: Comparing Geometries</h4>
+                <p><strong>Objective:</strong> Compare heat conduction through plane walls and cylindrical pipes</p>
+                <ol>
+                    <li>Set up a plane wall with thickness L = 0.1 m and area A = 1 m²</li>
+                    <li>Set up a cylindrical pipe with inner radius r₁ = 0.05 m, outer radius r₂ = 0.15 m (thickness = 0.1 m), and length L = 1 m</li>
+                    <li>Use the same material (e.g., copper) for both geometries</li>
+                    <li>Apply the same temperature difference (e.g., 100°C)</li>
+                    <li>Calculate and compare the heat transfer rates</li>
+                    <li>Observe how the geometry affects heat conduction</li>
+                </ol>
             </div>
         </section>
 
         <!-- Posttest Section -->
         <section id="posttest" class="section">
             <h2><i class="fas fa-graduation-cap"></i> Posttest</h2>
-            <p>Assess your understanding of Fourier's Law and heat conduction after completing the simulation.</p>
+            <p>Assess your understanding of Fourier's Law and heat conduction in different geometries after completing the simulation.</p>
             
             <form id="posttest-form">
                 <div class="question">
-                    <h4>1. In Fourier's Law, the negative sign indicates that:</h4>
+                    <h4>1. For the same thickness and temperature difference, which geometry typically has higher heat transfer rate?</h4>
                     <div class="option">
                         <input type="radio" id="posttest-q1-a" name="postq1" value="a">
-                        <label for="posttest-q1-a">Heat flows from low to high temperature</label>
+                        <span class="option-label">A</span>
+                        <label for="posttest-q1-a">Plane wall</label>
                     </div>
                     <div class="option">
                         <input type="radio" id="posttest-q1-b" name="postq1" value="b">
-                        <label for="posttest-q1-b">Heat flows from high to low temperature</label>
+                        <span class="option-label">B</span>
+                        <label for="posttest-q1-b">Cylindrical pipe</label>
                     </div>
                     <div class="option">
                         <input type="radio" id="posttest-q1-c" name="postq1" value="c">
-                        <label for="posttest-q1-c">The temperature gradient is negative</label>
+                        <span class="option-label">C</span>
+                        <label for="posttest-q1-c">Both are equal</label>
                     </div>
                     <div class="option">
                         <input type="radio" id="posttest-q1-d" name="postq1" value="d">
-                        <label for="posttest-q1-d">Thermal conductivity is negative</label>
+                        <span class="option-label">D</span>
+                        <label for="posttest-q1-d">Depends on the radius</label>
                     </div>
                 </div>
                 
                 <div class="question">
-                    <h4>2. If you double the thickness of a wall while keeping everything else constant, the heat transfer rate will:</h4>
+                    <h4>2. The thermal resistance for a cylindrical pipe is given by:</h4>
                     <div class="option">
                         <input type="radio" id="posttest-q2-a" name="postq2" value="a">
-                        <label for="posttest-q2-a">Double</label>
+                        <span class="option-label">A</span>
+                        <label for="posttest-q2-a">R = L/(kA)</label>
                     </div>
                     <div class="option">
                         <input type="radio" id="posttest-q2-b" name="postq2" value="b">
-                        <label for="posttest-q2-b">Halve</label>
+                        <span class="option-label">B</span>
+                        <label for="posttest-q2-b">R = ln(r₂/r₁)/(2πkL)</label>
                     </div>
                     <div class="option">
                         <input type="radio" id="posttest-q2-c" name="postq2" value="c">
-                        <label for="posttest-q2-c">Quadruple</label>
+                        <span class="option-label">C</span>
+                        <label for="posttest-q2-c">R = 1/(hA)</label>
                     </div>
                     <div class="option">
                         <input type="radio" id="posttest-q2-d" name="postq2" value="d">
-                        <label for="posttest-q2-d">Remain the same</label>
+                        <span class="option-label">D</span>
+                        <label for="posttest-q2-d">R = Δx/k</label>
                     </div>
                 </div>
                 
                 <div class="question">
-                    <h4>3. Which of the following is NOT a factor in Fourier's Law of heat conduction?</h4>
+                    <h4>3. For an insulated cylindrical pipe, adding more insulation:</h4>
                     <div class="option">
                         <input type="radio" id="posttest-q3-a" name="postq3" value="a">
-                        <label for="posttest-q3-a">Density of the material</label>
+                        <span class="option-label">A</span>
+                        <label for="posttest-q3-a">Always reduces heat loss</label>
                     </div>
                     <div class="option">
                         <input type="radio" id="posttest-q3-b" name="postq3" value="b">
-                        <label for="posttest-q3-b">Temperature gradient</label>
+                        <span class="option-label">B</span>
+                        <label for="posttest-q3-b">Always increases heat loss</label>
                     </div>
                     <div class="option">
                         <input type="radio" id="posttest-q3-c" name="postq3" value="c">
-                        <label for="posttest-q3-c">Cross-sectional area</label>
+                        <span class="option-label">C</span>
+                        <label for="posttest-q3-c">May increase heat loss beyond critical radius</label>
                     </div>
                     <div class="option">
                         <input type="radio" id="posttest-q3-d" name="postq3" value="d">
-                        <label for="posttest-q3-d">Thermal conductivity</label>
+                        <span class="option-label">D</span>
+                        <label for="posttest-q3-d">Has no effect on heat loss</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <h4>4. In the formula Q = 2πkL(T₁ - T₂)/ln(r₂/r₁), what does L represent?</h4>
+                    <div class="option">
+                        <input type="radio" id="posttest-q4-a" name="postq4" value="a">
+                        <span class="option-label">A</span>
+                        <label for="posttest-q4-a">Pipe thickness</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="posttest-q4-b" name="postq4" value="b">
+                        <span class="option-label">B</span>
+                        <label for="posttest-q4-b">Pipe length</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="posttest-q4-c" name="postq4" value="c">
+                        <span class="option-label">C</span>
+                        <label for="posttest-q4-c">Thermal conductivity</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="posttest-q4-d" name="postq4" value="d">
+                        <span class="option-label">D</span>
+                        <label for="posttest-q4-d">Temperature gradient</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <h4>5. Which industrial application primarily uses cylindrical pipe heat conduction analysis?</h4>
+                    <div class="option">
+                        <input type="radio" id="posttest-q5-a" name="postq5" value="a">
+                        <span class="option-label">A</span>
+                        <label for="posttest-q5-a">Building insulation design</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="posttest-q5-b" name="postq5" value="b">
+                        <span class="option-label">B</span>
+                        <label for="posttest-q5-b">Pipeline insulation design</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="posttest-q5-c" name="postq5" value="c">
+                        <span class="option-label">C</span>
+                        <label for="posttest-q5-c">Electronic chip cooling</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="posttest-q5-d" name="postq5" value="d">
+                        <span class="option-label">D</span>
+                        <label for="posttest-q5-d">Solar panel design</label>
                     </div>
                 </div>
                 
                 <button type="button" class="submit-btn" id="submit-posttest">Submit Posttest</button>
             </form>
+            
+            <!-- Posttest Results -->
+            <div id="posttest-results" class="results-container">
+                <div class="results-header">
+                    <h3>Posttest Results</h3>
+                    <div class="score-display">
+                        <span class="score-percentage" id="posttest-score">0%</span>
+                        <span>Score</span>
+                    </div>
+                </div>
+                
+                <div id="posttest-score-text" class="score-text"></div>
+                
+                <div id="posttest-results-details">
+                    <!-- Results will be populated by JavaScript -->
+                </div>
+                
+                <div id="improvement-notice" class="improvement-notice">
+                    <!-- Improvement notice will be populated by JavaScript -->
+                </div>
+                
+                <button class="retake-btn" id="retake-posttest">Retake Posttest</button>
+            </div>
         </section>
 
         <!-- References Section -->
@@ -721,50 +1539,84 @@
                     <strong>Bejan, A. (2013).</strong>
                     <br><em>Heat Transfer (1st ed.).</em> John Wiley & Sons.
                 </li>
+                <li>
+                    <strong>Holman, J. P. (2010).</strong>
+                    <br><em>Heat Transfer (10th ed.).</em> McGraw-Hill Education.
+                </li>
             </ul>
         </section>
 
-        <!-- Contributors Section -->
+        <!-- Updated Contributors Section -->
         <section id="contributors" class="section">
             <h2><i class="fas fa-users"></i> Contributors</h2>
-            <p>This virtual laboratory was developed by the following team members:</p>
+            <p class="team-description">This virtual laboratory was developed by a dedicated team of students from the Department of Information Technology under the guidance of our esteemed mentor. Each team member contributed their unique skills and expertise to create this comprehensive educational resource.</p>
             
-            <div class="contributors-grid">
-                <div class="contributor-card">
-                    <div class="contributor-img">
-                        <i class="fas fa-user"></i>
+            <h3 class="team-section-title">Development Team</h3>
+            <div class="team-grid">
+                <div class="team-member-card">
+                    <div class="member-img">
+                        <i class="fas fa-user-tie"></i>
                     </div>
-                    <h3>Dr. Sarah Johnson</h3>
-                    <p>Project Lead & Thermal Sciences Professor</p>
-                    <p>Department of Mechanical Engineering</p>
+                    <h3 class="member-name">Jaydeep</h3>
+                    <p class="member-role">Team Lead & Backend Developer</p>
+                    <p class="member-department">Department of Information Technology</p>
+                    <p class="member-skills">JavaScript, Python, Database Design, API Development</p>
                 </div>
                 
-                <div class="contributor-card">
-                    <div class="contributor-img">
-                        <i class="fas fa-user"></i>
+                <div class="team-member-card">
+                    <div class="member-img">
+                        <i class="fas fa-laptop-code"></i>
                     </div>
-                    <h3>Michael Chen</h3>
-                    <p>Simulation Developer & Research Assistant</p>
-                    <p>M.S. in Thermal Engineering</p>
+                    <h3 class="member-name">Vedika Maramwar</h3>
+                    <p class="member-role">Frontend Developer & UI Designer</p>
+                    <p class="member-department">Department of Information Technology</p>
+                    <p class="member-skills">HTML5, CSS3, JavaScript, Responsive Design, UX/UI</p>
                 </div>
                 
-                <div class="contributor-card">
-                    <div class="contributor-img">
-                        <i class="fas fa-user"></i>
+                <div class="team-member-card">
+                    <div class="member-img">
+                        <i class="fas fa-paint-brush"></i>
                     </div>
-                    <h3>Priya Sharma</h3>
-                    <p>Content Developer & Instructional Designer</p>
-                    <p>Ph.D. in Engineering Education</p>
+                    <h3 class="member-name">Sanika Shinde</h3>
+                    <p class="member-role">Content Developer & Graphic Designer</p>
+                    <p class="member-department">Department of Information Technology</p>
+                    <p class="member-skills">Content Writing, SVG Graphics, Technical Documentation, Visual Design</p>
                 </div>
                 
-                <div class="contributor-card">
-                    <div class="contributor-img">
-                        <i class="fas fa-user"></i>
+                <div class="team-member-card">
+                    <div class="member-img">
+                        <i class="fas fa-chart-line"></i>
                     </div>
-                    <h3>David Rodriguez</h3>
-                    <p>Web Developer & UI/UX Designer</p>
-                    <p>B.S. in Computer Science</p>
+                    <h3 class="member-name">Niyati Jadhv</h3>
+                    <p class="member-role">Testing & Quality Assurance</p>
+                    <p class="member-department">Department of Information Technology</p>
+                    <p class="member-skills">Testing, Debugging, Performance Optimization, User Experience</p>
                 </div>
+            </div>
+            
+            <h3 class="mentor-section-title">Mentor Guidance</h3>
+            <div class="mentor-grid">
+                <div class="mentor-card">
+                    <div class="mentor-img">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <h3 class="mentor-name">Prof. Dinesh Kute</h3>
+                    <p class="mentor-role">Project Mentor & Faculty Guide</p>
+                    <p class="mentor-department">Department of Information Technology</p>
+                    <p class="mentor-expertise">Specialized in Web Technologies, Software Engineering, and Educational Technology. Provided invaluable guidance on project planning, technical implementation, and educational pedagogy throughout the development process.</p>
+                </div>
+            </div>
+            
+            <div class="theory-card" style="margin-top: 2rem;">
+                <h4><i class="fas fa-hands-helping"></i> Team Contributions</h4>
+                <ul>
+                    <li><strong>Jaydeep</strong>: Led the project, developed backend logic, implemented assessment systems, and coordinated team efforts</li>
+                    <li><strong>Vedika Maramwar</strong>: Created the responsive UI/UX design, implemented interactive elements, and ensured cross-browser compatibility</li>
+                    <li><strong>Sanika Shinde</strong>: Developed educational content, created visual diagrams and illustrations, and wrote technical explanations</li>
+                    <li><strong>Niyati Jadhv</strong>: Conducted thorough testing, implemented feedback systems, and optimized performance</li>
+                    <li><strong>Prof. Dinesh Kute</strong>: Provided expert guidance, reviewed technical content, and ensured educational effectiveness</li>
+                </ul>
+                <p style="margin-top: 1rem;"><strong>Project Duration:</strong> 3 Months | <strong>Technologies Used:</strong> HTML5, CSS3, JavaScript, SVG, PhET Simulations</p>
             </div>
         </section>
 
@@ -794,10 +1646,14 @@
         </section>
     </div>
 
-    <!-- Footer -->
+    <!-- Updated Footer -->
     <footer>
-        <p>Visual Lab: Heat Conduction &copy; 2023 | Department of Mechanical Engineering</p>
-        <p>This educational resource is designed for engineering students studying heat transfer.</p>
+        <div class="footer-content">
+            <div class="footer-logo">Visual Lab: Heat Conduction</div>
+            <div class="footer-department">Department of Information Technology</div>
+            <div class="footer-purpose">This educational resource is designed for engineering students studying heat transfer.</div>
+            <div class="footer-copyright">&copy; 2025 Visual Lab: Heat Conduction. All rights reserved. | Developed by: Jaydeep, Vedika Maramwar, Sanika Shinde, Niyati Jadhv | Mentored by: Prof. Dinesh Kute</div>
+        </div>
     </footer>
 
     <script>
@@ -835,21 +1691,448 @@
                 });
             });
             
+            // Test configurations (Updated for cylindrical pipes)
+            const pretestAnswers = {
+                q1: 'b', // Logarithmic
+                q2: 'b', // Radial (r-direction)
+                q3: 'c', // Increases with radius
+                q4: 'b', // Q = 2πkL(T₁ - T₂)/ln(r₂/r₁)
+                q5: 'd'  // All of the above
+            };
+            
+            const posttestAnswers = {
+                postq1: 'd', // Depends on the radius
+                postq2: 'b', // R = ln(r₂/r₁)/(2πkL)
+                postq3: 'c', // May increase heat loss beyond critical radius
+                postq4: 'b', // Pipe length
+                postq5: 'b'  // Pipeline insulation design
+            };
+            
+            const pretestQuestions = [
+                {
+                    text: "For radial heat conduction in cylindrical pipes, the temperature distribution is:",
+                    options: {
+                        a: "Linear",
+                        b: "Logarithmic",
+                        c: "Exponential",
+                        d: "Sinusoidal"
+                    },
+                    correct: "b",
+                    explanation: "In cylindrical coordinates with radial heat flow, the temperature distribution follows a logarithmic pattern: T(r) = T₁ + (T₂ - T₁)[ln(r/r₁)/ln(r₂/r₁)]."
+                },
+                {
+                    text: "In cylindrical coordinates, heat conduction occurs in which direction?",
+                    options: {
+                        a: "Linear (x-direction)",
+                        b: "Radial (r-direction)",
+                        c: "Angular (θ-direction)",
+                        d: "Axial (z-direction)"
+                    },
+                    correct: "b",
+                    explanation: "For one-dimensional heat conduction in cylindrical pipes, heat flows radially from the inner surface to the outer surface (or vice versa)."
+                },
+                {
+                    text: "For heat conduction through a cylindrical pipe, the heat transfer area:",
+                    options: {
+                        a: "Remains constant",
+                        b: "Decreases with radius",
+                        c: "Increases with radius",
+                        d: "Is zero at the center"
+                    },
+                    correct: "c",
+                    explanation: "In cylindrical coordinates, the heat transfer area A(r) = 2πrL increases linearly with radius. This is a key difference from plane wall conduction where area remains constant."
+                },
+                {
+                    text: "The formula for heat conduction through a cylindrical pipe is:",
+                    options: {
+                        a: "Q = kA(T₁ - T₂)/L",
+                        b: "Q = 2πkL(T₁ - T₂)/ln(r₂/r₁)",
+                        c: "Q = hA(T₁ - T₂)",
+                        d: "Q = σA(T₁⁴ - T₂⁴)"
+                    },
+                    correct: "b",
+                    explanation: "The correct formula for steady-state radial heat conduction through a cylindrical pipe is Q = 2πkL(T₁ - T₂)/ln(r₂/r₁), where r₁ and r₂ are inner and outer radii."
+                },
+                {
+                    text: "Which of the following is a key difference between plane wall and cylindrical pipe conduction?",
+                    options: {
+                        a: "Heat flow direction",
+                        b: "Temperature distribution",
+                        c: "Area variation with position",
+                        d: "All of the above"
+                    },
+                    correct: "d",
+                    explanation: "Plane walls have linear heat flow, linear temperature distribution, and constant area. Cylindrical pipes have radial heat flow, logarithmic temperature distribution, and area that increases with radius."
+                }
+            ];
+            
+            const posttestQuestions = [
+                {
+                    text: "For the same thickness and temperature difference, which geometry typically has higher heat transfer rate?",
+                    options: {
+                        a: "Plane wall",
+                        b: "Cylindrical pipe",
+                        c: "Both are equal",
+                        d: "Depends on the radius"
+                    },
+                    correct: "d",
+                    explanation: "The heat transfer rate depends on the specific dimensions. For small radius ratios, cylindrical pipes can have higher heat transfer due to larger surface area, but this varies with geometry."
+                },
+                {
+                    text: "The thermal resistance for a cylindrical pipe is given by:",
+                    options: {
+                        a: "R = L/(kA)",
+                        b: "R = ln(r₂/r₁)/(2πkL)",
+                        c: "R = 1/(hA)",
+                        d: "R = Δx/k"
+                    },
+                    correct: "b",
+                    explanation: "The thermal resistance for radial conduction in a cylindrical pipe is R = ln(r₂/r₁)/(2πkL). This differs from plane wall resistance R = L/(kA)."
+                },
+                {
+                    text: "For an insulated cylindrical pipe, adding more insulation:",
+                    options: {
+                        a: "Always reduces heat loss",
+                        b: "Always increases heat loss",
+                        c: "May increase heat loss beyond critical radius",
+                        d: "Has no effect on heat loss"
+                    },
+                    correct: "c",
+                    explanation: "Due to increasing surface area with radius, adding insulation to small pipes may initially increase heat loss (critical radius effect). Beyond the critical radius, further insulation reduces heat loss."
+                },
+                {
+                    text: "In the formula Q = 2πkL(T₁ - T₂)/ln(r₂/r₁), what does L represent?",
+                    options: {
+                        a: "Pipe thickness",
+                        b: "Pipe length",
+                        c: "Thermal conductivity",
+                        d: "Temperature gradient"
+                    },
+                    correct: "b",
+                    explanation: "L represents the length of the cylindrical pipe. The formula calculates total heat transfer rate for the entire pipe length."
+                },
+                {
+                    text: "Which industrial application primarily uses cylindrical pipe heat conduction analysis?",
+                    options: {
+                        a: "Building insulation design",
+                        b: "Pipeline insulation design",
+                        c: "Electronic chip cooling",
+                        d: "Solar panel design"
+                    },
+                    correct: "b",
+                    explanation: "Cylindrical pipe heat conduction analysis is crucial for designing insulation for oil, gas, and steam pipelines to minimize energy loss and ensure safe operation."
+                }
+            ];
+            
+            // Store test results
+            let pretestResults = null;
+            let posttestResults = null;
+            
             // Pretest submission
             const submitPretestBtn = document.getElementById('submit-pretest');
+            const pretestResultsContainer = document.getElementById('pretest-results');
+            const pretestScoreElement = document.getElementById('pretest-score');
+            const pretestScoreText = document.getElementById('pretest-score-text');
+            const pretestResultsDetails = document.getElementById('pretest-results-details');
+            
             if (submitPretestBtn) {
                 submitPretestBtn.addEventListener('click', function() {
-                    alert('Pretest submitted! Your responses have been recorded. Proceed to the simulation section.');
-                    // In a real implementation, this would send data to a server
+                    // Calculate score
+                    let score = 0;
+                    let totalQuestions = Object.keys(pretestAnswers).length;
+                    let userAnswers = {};
+                    
+                    // Get user answers
+                    for (let i = 1; i <= totalQuestions; i++) {
+                        const questionName = `q${i}`;
+                        const selectedOption = document.querySelector(`input[name="${questionName}"]:checked`);
+                        
+                        if (selectedOption) {
+                            userAnswers[questionName] = selectedOption.value;
+                            if (selectedOption.value === pretestAnswers[questionName]) {
+                                score++;
+                            }
+                        } else {
+                            userAnswers[questionName] = null;
+                        }
+                    }
+                    
+                    // Calculate percentage
+                    const percentage = Math.round((score / totalQuestions) * 100);
+                    
+                    // Store results
+                    pretestResults = {
+                        score: score,
+                        total: totalQuestions,
+                        percentage: percentage,
+                        answers: userAnswers
+                    };
+                    
+                    // Display results
+                    displayPretestResults(score, totalQuestions, percentage, userAnswers);
+                    
+                    // Show results container
+                    pretestResultsContainer.style.display = 'block';
+                    
+                    // Scroll to results
+                    pretestResultsContainer.scrollIntoView({ behavior: 'smooth' });
+                });
+            }
+            
+            // Function to display pretest results
+            function displayPretestResults(score, total, percentage, userAnswers) {
+                // Update score display
+                pretestScoreElement.textContent = `${percentage}%`;
+                
+                // Update score text
+                let scoreText = `You scored ${score} out of ${total} (${percentage}%)`;
+                pretestScoreText.textContent = scoreText;
+                
+                // Clear previous results
+                pretestResultsDetails.innerHTML = '';
+                
+                // Add result for each question
+                for (let i = 0; i < pretestQuestions.length; i++) {
+                    const question = pretestQuestions[i];
+                    const questionNum = i + 1;
+                    const questionKey = `q${questionNum}`;
+                    const userAnswer = userAnswers[questionKey];
+                    const correctAnswer = question.correct;
+                    const isCorrect = userAnswer === correctAnswer;
+                    
+                    // Create result item
+                    const resultItem = document.createElement('div');
+                    resultItem.className = `result-item ${isCorrect ? 'correct-answer' : 'incorrect-answer'}`;
+                    
+                    // Question text
+                    const questionText = document.createElement('div');
+                    questionText.className = 'result-question';
+                    questionText.textContent = `${questionNum}. ${question.text}`;
+                    resultItem.appendChild(questionText);
+                    
+                    // User's answer
+                    const userAnswerDiv = document.createElement('div');
+                    userAnswerDiv.className = 'result-answer';
+                    
+                    const userStatus = document.createElement('span');
+                    userStatus.className = `answer-status ${isCorrect ? 'correct' : 'incorrect'}`;
+                    userStatus.textContent = isCorrect ? 'Correct' : 'Incorrect';
+                    userAnswerDiv.appendChild(userStatus);
+                    
+                    const userAnswerText = document.createElement('span');
+                    if (userAnswer) {
+                        userAnswerText.textContent = `Your answer: ${question.options[userAnswer]}`;
+                    } else {
+                        userAnswerText.textContent = 'Your answer: Not answered';
+                    }
+                    userAnswerDiv.appendChild(userAnswerText);
+                    resultItem.appendChild(userAnswerDiv);
+                    
+                    // Correct answer (if incorrect)
+                    if (!isCorrect) {
+                        const correctAnswerDiv = document.createElement('div');
+                        correctAnswerDiv.className = 'result-answer';
+                        
+                        const correctStatus = document.createElement('span');
+                        correctStatus.className = 'answer-status correct';
+                        correctStatus.textContent = 'Correct';
+                        correctAnswerDiv.appendChild(correctStatus);
+                        
+                        const correctAnswerText = document.createElement('span');
+                        correctAnswerText.textContent = `Correct answer: ${question.options[correctAnswer]}`;
+                        correctAnswerDiv.appendChild(correctAnswerText);
+                        resultItem.appendChild(correctAnswerDiv);
+                    }
+                    
+                    // Explanation
+                    const explanationDiv = document.createElement('div');
+                    explanationDiv.className = 'feedback-message';
+                    explanationDiv.textContent = question.explanation;
+                    resultItem.appendChild(explanationDiv);
+                    
+                    // Add to results container
+                    pretestResultsDetails.appendChild(resultItem);
+                }
+            }
+            
+            // Retake pretest button
+            const retakePretestBtn = document.getElementById('retake-pretest');
+            if (retakePretestBtn) {
+                retakePretestBtn.addEventListener('click', function() {
+                    // Reset form
+                    document.getElementById('pretest-form').reset();
+                    
+                    // Hide results
+                    pretestResultsContainer.style.display = 'none';
+                    
+                    // Reset stored results
+                    pretestResults = null;
                 });
             }
             
             // Posttest submission
             const submitPosttestBtn = document.getElementById('submit-posttest');
+            const posttestResultsContainer = document.getElementById('posttest-results');
+            const posttestScoreElement = document.getElementById('posttest-score');
+            const posttestScoreText = document.getElementById('posttest-score-text');
+            const posttestResultsDetails = document.getElementById('posttest-results-details');
+            const improvementNotice = document.getElementById('improvement-notice');
+            
             if (submitPosttestBtn) {
                 submitPosttestBtn.addEventListener('click', function() {
-                    alert('Posttest submitted! Your understanding of heat conduction concepts has been assessed.');
-                    // In a real implementation, this would send data to a server and show results
+                    // Calculate score
+                    let score = 0;
+                    let totalQuestions = Object.keys(posttestAnswers).length;
+                    let userAnswers = {};
+                    
+                    // Get user answers
+                    for (let i = 1; i <= totalQuestions; i++) {
+                        const questionName = `postq${i}`;
+                        const selectedOption = document.querySelector(`input[name="${questionName}"]:checked`);
+                        
+                        if (selectedOption) {
+                            userAnswers[questionName] = selectedOption.value;
+                            if (selectedOption.value === posttestAnswers[questionName]) {
+                                score++;
+                            }
+                        } else {
+                            userAnswers[questionName] = null;
+                        }
+                    }
+                    
+                    // Calculate percentage
+                    const percentage = Math.round((score / totalQuestions) * 100);
+                    
+                    // Store results
+                    posttestResults = {
+                        score: score,
+                        total: totalQuestions,
+                        percentage: percentage,
+                        answers: userAnswers
+                    };
+                    
+                    // Display results
+                    displayPosttestResults(score, totalQuestions, percentage, userAnswers);
+                    
+                    // Show results container
+                    posttestResultsContainer.style.display = 'block';
+                    
+                    // Scroll to results
+                    posttestResultsContainer.scrollIntoView({ behavior: 'smooth' });
+                });
+            }
+            
+            // Function to display posttest results
+            function displayPosttestResults(score, total, percentage, userAnswers) {
+                // Update score display
+                posttestScoreElement.textContent = `${percentage}%`;
+                
+                // Update score text
+                let scoreText = `You scored ${score} out of ${total} (${percentage}%)`;
+                posttestScoreText.textContent = scoreText;
+                
+                // Clear previous results
+                posttestResultsDetails.innerHTML = '';
+                
+                // Add result for each question
+                for (let i = 0; i < posttestQuestions.length; i++) {
+                    const question = posttestQuestions[i];
+                    const questionNum = i + 1;
+                    const questionKey = `postq${questionNum}`;
+                    const userAnswer = userAnswers[questionKey];
+                    const correctAnswer = question.correct;
+                    const isCorrect = userAnswer === correctAnswer;
+                    
+                    // Create result item
+                    const resultItem = document.createElement('div');
+                    resultItem.className = `result-item ${isCorrect ? 'correct-answer' : 'incorrect-answer'}`;
+                    
+                    // Question text
+                    const questionText = document.createElement('div');
+                    questionText.className = 'result-question';
+                    questionText.textContent = `${questionNum}. ${question.text}`;
+                    resultItem.appendChild(questionText);
+                    
+                    // User's answer
+                    const userAnswerDiv = document.createElement('div');
+                    userAnswerDiv.className = 'result-answer';
+                    
+                    const userStatus = document.createElement('span');
+                    userStatus.className = `answer-status ${isCorrect ? 'correct' : 'incorrect'}`;
+                    userStatus.textContent = isCorrect ? 'Correct' : 'Incorrect';
+                    userAnswerDiv.appendChild(userStatus);
+                    
+                    const userAnswerText = document.createElement('span');
+                    if (userAnswer) {
+                        userAnswerText.textContent = `Your answer: ${question.options[userAnswer]}`;
+                    } else {
+                        userAnswerText.textContent = 'Your answer: Not answered';
+                    }
+                    userAnswerDiv.appendChild(userAnswerText);
+                    resultItem.appendChild(userAnswerDiv);
+                    
+                    // Correct answer (if incorrect)
+                    if (!isCorrect) {
+                        const correctAnswerDiv = document.createElement('div');
+                        correctAnswerDiv.className = 'result-answer';
+                        
+                        const correctStatus = document.createElement('span');
+                        correctStatus.className = 'answer-status correct';
+                        correctStatus.textContent = 'Correct';
+                        correctAnswerDiv.appendChild(correctStatus);
+                        
+                        const correctAnswerText = document.createElement('span');
+                        correctAnswerText.textContent = `Correct answer: ${question.options[correctAnswer]}`;
+                        correctAnswerDiv.appendChild(correctAnswerText);
+                        resultItem.appendChild(correctAnswerDiv);
+                    }
+                    
+                    // Explanation
+                    const explanationDiv = document.createElement('div');
+                    explanationDiv.className = 'feedback-message';
+                    explanationDiv.textContent = question.explanation;
+                    resultItem.appendChild(explanationDiv);
+                    
+                    // Add to results container
+                    posttestResultsDetails.appendChild(resultItem);
+                }
+                
+                // Show improvement notice
+                improvementNotice.innerHTML = '';
+                
+                let improvementMessage = '';
+                if (pretestResults) {
+                    const improvement = percentage - pretestResults.percentage;
+                    if (improvement > 0) {
+                        improvementMessage = `<h4><i class="fas fa-chart-line"></i> Improvement Detected!</h4>
+                        <p>Your score improved by ${improvement}% compared to your pretest score of ${pretestResults.percentage}%. Great job!</p>`;
+                    } else if (improvement < 0) {
+                        improvementMessage = `<h4><i class="fas fa-exclamation-triangle"></i> Score Decrease</h4>
+                        <p>Your score decreased by ${Math.abs(improvement)}% compared to your pretest score of ${pretestResults.percentage}%. Consider reviewing the theory and simulation again.</p>`;
+                    } else {
+                        improvementMessage = `<h4><i class="fas fa-equals"></i> No Change in Score</h4>
+                        <p>Your posttest score is the same as your pretest score (${pretestResults.percentage}%). Try reviewing the concepts you missed.</p>`;
+                    }
+                } else {
+                    improvementMessage = `<h4><i class="fas fa-info-circle"></i> Learning Assessment</h4>
+                    <p>Based on your posttest results, you have a ${percentage >= 70 ? 'good' : 'basic'} understanding of heat conduction concepts. ${percentage < 70 ? 'Consider reviewing the theory and simulation again.' : ''}</p>`;
+                }
+                
+                improvementNotice.innerHTML = improvementMessage;
+            }
+            
+            // Retake posttest button
+            const retakePosttestBtn = document.getElementById('retake-posttest');
+            if (retakePosttestBtn) {
+                retakePosttestBtn.addEventListener('click', function() {
+                    // Reset form
+                    document.getElementById('posttest-form').reset();
+                    
+                    // Hide results
+                    posttestResultsContainer.style.display = 'none';
+                    
+                    // Reset stored results
+                    posttestResults = null;
                 });
             }
             
@@ -860,6 +2143,7 @@
                     e.preventDefault();
                     
                     const name = document.getElementById('name').value;
+                    const email = document.getElementById('email').value;
                     const feedbackText = document.getElementById('feedback-text').value;
                     
                     if (!feedbackText.trim()) {
@@ -868,7 +2152,7 @@
                     }
                     
                     // In a real implementation, this would send data to a server
-                    console.log('Feedback submitted:', { name, feedbackText });
+                    console.log('Feedback submitted:', { name, email, feedbackText });
                     
                     // Show success message
                     alert('Thank you for your feedback! Your input helps us improve this educational resource.');

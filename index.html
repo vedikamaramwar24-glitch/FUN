@@ -2,239 +2,885 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Visual Lab – Heat Conduction</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Lab: Heat Conduction</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        * {
             margin: 0;
-            background-color: #f4f6f8;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        :root {
+            --primary-blue: #0a2463;
+            --secondary-blue: #1e3d8f;
+            --light-blue: #3e8eef;
+            --accent-blue: #5fa8f2;
+            --light-bg: #f0f7ff;
+            --card-bg: #ffffff;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --border-radius: 10px;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
         header {
-            background-color: #003366;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
             color: white;
-            padding: 15px;
+            padding: 2rem 1rem;
             text-align: center;
+            border-bottom: 5px solid var(--accent-blue);
         }
 
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        /* Navigation Styles */
         nav {
+            background-color: var(--secondary-blue);
+            padding: 0.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            background-color: #00509e;
-            padding: 10px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        nav button {
-            margin: 5px;
-            padding: 10px 15px;
+        .nav-button {
+            background: transparent;
+            color: white;
             border: none;
-            background-color: white;
-            color: #00509e;
-            font-weight: bold;
+            padding: 0.8rem 1.2rem;
+            margin: 0.2rem;
             cursor: pointer;
             border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
 
-        nav button:hover {
-            background-color: #cce0ff;
+        .nav-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-button.active {
+            background-color: var(--light-blue);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Main Content Area */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
         }
 
         .section {
             display: none;
-            padding: 20px;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .section h2 {
-            color: #003366;
+            color: var(--primary-blue);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light-blue);
         }
 
-        iframe {
+        .section h3 {
+            color: var(--secondary-blue);
+            margin: 1.5rem 0 1rem;
+        }
+
+        /* Aim Section */
+        .aim-content {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .aim-text {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .aim-visual {
+            flex: 1;
+            min-width: 300px;
+            text-align: center;
+        }
+
+        .aim-visual i {
+            font-size: 12rem;
+            color: var(--light-blue);
+        }
+
+        /* Theory Section */
+        .theory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .theory-card {
+            background-color: var(--light-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            border-left: 5px solid var(--accent-blue);
+        }
+
+        .formula-box {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+
+        .formula {
+            font-size: 1.8rem;
+            font-family: 'Cambria Math', serif;
+            margin: 1rem 0;
+        }
+
+        .variable-table {
             width: 100%;
-            height: 500px;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .variable-table th, .variable-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .variable-table th {
+            background-color: var(--light-bg);
+            color: var(--primary-blue);
+        }
+
+        /* Test Sections */
+        .question {
+            background-color: var(--light-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1.5rem;
+        }
+
+        .question h4 {
+            margin-bottom: 1rem;
+            color: var(--secondary-blue);
+        }
+
+        .option {
+            margin: 0.8rem 0;
+            padding: 0.8rem;
+            background-color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .option:hover {
+            background-color: #e6f0ff;
+        }
+
+        .option input {
+            margin-right: 0.8rem;
+        }
+
+        .submit-btn {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--secondary-blue);
+        }
+
+        /* Simulation Section */
+        .simulation-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            margin-top: 1.5rem;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .simulation-iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             border: none;
         }
 
-        .contributors {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
-        }
-
-        .member {
-            background-color: white;
-            padding: 10px;
-            text-align: center;
+        .simulation-note {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #fff9e6;
+            border-left: 4px solid #ffcc00;
             border-radius: 5px;
         }
 
-        .photo {
-            width: 100px;
-            height: 100px;
-            background-color: #ddd;
-            margin: 0 auto 10px;
-            border-radius: 50%;
-            line-height: 100px;
+        /* References Section */
+        .reference-list {
+            list-style-type: none;
         }
 
-        footer {
+        .reference-list li {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: var(--light-bg);
+            border-radius: var(--border-radius);
+        }
+
+        /* Contributors Section */
+        .contributors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .contributor-card {
             text-align: center;
-            padding: 10px;
-            background-color: #003366;
+            background-color: var(--light-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            transition: transform 0.3s ease;
+        }
+
+        .contributor-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .contributor-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            background-color: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
+            font-size: 3rem;
+        }
+
+        /* Feedback Section */
+        .feedback-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-width: 600px;
+            margin-top: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--secondary-blue);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 0.8rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary-blue);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.2rem;
+            }
+
+            header p {
+                font-size: 1.1rem;
+            }
+
+            .nav-container {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+
+            .nav-button {
+                font-size: 0.9rem;
+                padding: 0.6rem 0.9rem;
+                white-space: nowrap;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .aim-visual i {
+                font-size: 8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section {
+                padding: 1rem;
+            }
+
+            .aim-visual i {
+                font-size: 6rem;
+            }
+
+            .formula {
+                font-size: 1.4rem;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Header -->
+    <header>
+        <h1>Visual Lab: Heat Conduction</h1>
+        <p>An interactive virtual laboratory for studying Fourier's Law of Heat Conduction</p>
+    </header>
 
-<header>
-    <h1>Visual Lab: Heat Conduction</h1>
-    <p>Fourier’s Law of Heat Conduction</p>
-</header>
-
-<nav>
-    <button onclick="showSection('aim')">Aim</button>
-    <button onclick="showSection('theory')">Theory</button>
-    <button onclick="showSection('pretest')">Pretest</button>
-    <button onclick="showSection('simulation')">Simulation</button>
-    <button onclick="showSection('posttest')">Posttest</button>
-    <button onclick="showSection('references')">References</button>
-    <button onclick="showSection('contributors')">Contributors</button>
-    <button onclick="showSection('feedback')">Feedback</button>
-</nav>
-
-<!-- AIM -->
-<div id="aim" class="section">
-    <h2>Aim</h2>
-    <p>
-        To study and understand Fourier’s Law of Heat Conduction and analyze
-        the rate of heat transfer through a material due to temperature gradient.
-    </p>
-</div>
-
-<!-- THEORY -->
-<div id="theory" class="section">
-    <h2>Theory</h2>
-    <p>
-        Heat conduction is the transfer of thermal energy through a material without
-        any movement of the material as a whole. Fourier’s Law states that the rate
-        of heat flow through a material is directly proportional to the negative
-        gradient of temperature and the area perpendicular to the direction of heat flow.
-    </p>
-    <p>
-        Mathematically, Fourier’s Law is given as:
-        <br><b>Q = -kA (dT/dx)</b>
-    </p>
-    <p>
-        Where:
-        <ul>
-            <li>Q = Rate of heat transfer</li>
-            <li>k = Thermal conductivity of the material</li>
-            <li>A = Area of cross-section</li>
-            <li>dT/dx = Temperature gradient</li>
-        </ul>
-        The negative sign indicates that heat flows from higher temperature to lower temperature.
-    </p>
-</div>
-
-<!-- PRETEST -->
-<div id="pretest" class="section">
-    <h2>Pretest</h2>
-    <p>1. What is heat conduction?</p>
-    <input type="radio" name="q1"> Transfer of heat by radiation<br>
-    <input type="radio" name="q1"> Transfer of heat through direct contact<br>
-    <input type="radio" name="q1"> Transfer of heat by convection<br><br>
-
-    <p>2. Which quantity affects heat conduction?</p>
-    <input type="radio" name="q2"> Color of material<br>
-    <input type="radio" name="q2"> Thermal conductivity<br>
-    <input type="radio" name="q2"> Shape only<br>
-</div>
-
-<!-- SIMULATION -->
-<div id="simulation" class="section">
-    <h2>Simulation</h2>
-    <iframe src="https://optimus-prime559.github.io/LAUC-project-final/simulation.html"></iframe>
-</div>
-
-<!-- POSTTEST -->
-<div id="posttest" class="section">
-    <h2>Posttest</h2>
-
-    <p>1. Fourier’s law relates heat transfer to:</p>
-    <input type="radio" name="p1"> Pressure gradient<br>
-    <input type="radio" name="p1"> Temperature gradient<br>
-    <input type="radio" name="p1"> Density gradient<br><br>
-
-    <p>2. The SI unit of thermal conductivity is:</p>
-    <input type="radio" name="p2"> W/mK<br>
-    <input type="radio" name="p2"> J/kgK<br>
-    <input type="radio" name="p2"> N/m²<br>
-</div>
-
-<!-- REFERENCES -->
-<div id="references" class="section">
-    <h2>References</h2>
-    <ul>
-        <li>Advanced Engineering Mathematics – Erwin Kreyszig</li>
-        <li>Heat and Mass Transfer – Raghavan & Krishnamurthy</li>
-    </ul>
-</div>
-
-<!-- CONTRIBUTORS -->
-<div id="contributors" class="section">
-    <h2>Contributors</h2>
-    <div class="contributors">
-        <div class="member">
-            <div class="photo">Photo</div>
-            <p>Member 1<br>Description</p>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <button class="nav-button active" data-section="aim">Aim</button>
+            <button class="nav-button" data-section="theory">Theory</button>
+            <button class="nav-button" data-section="pretest">Pretest</button>
+            <button class="nav-button" data-section="simulation">Simulation</button>
+            <button class="nav-button" data-section="posttest">Posttest</button>
+            <button class="nav-button" data-section="references">References</button>
+            <button class="nav-button" data-section="contributors">Contributors</button>
+            <button class="nav-button" data-section="feedback">Feedback</button>
         </div>
-        <div class="member">
-            <div class="photo">Photo</div>
-            <p>Member 2<br>Description</p>
-        </div>
-        <div class="member">
-            <div class="photo">Photo</div>
-            <p>Member 3<br>Description</p>
-        </div>
-        <div class="member">
-            <div class="photo">Photo</div>
-            <p>Member 4<br>Description</p>
-        </div>
-        <div class="member">
-            <div class="photo">Photo</div>
-            <p>Member 5<br>Description</p>
-        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Aim Section -->
+        <section id="aim" class="section active">
+            <h2><i class="fas fa-bullseye"></i> Aim of the Experiment</h2>
+            <div class="aim-content">
+                <div class="aim-text">
+                    <p>This virtual laboratory experiment aims to help engineering students understand and visualize the fundamental principles of heat conduction through solids, as described by Fourier's Law of Heat Conduction.</p>
+                    
+                    <h3>Learning Objectives:</h3>
+                    <ul>
+                        <li>Understand the mechanism of heat conduction in solids</li>
+                        <li>Comprehend Fourier's Law and its mathematical formulation</li>
+                        <li>Analyze how different materials conduct heat at varying rates</li>
+                        <li>Explore the relationship between temperature gradient, thermal conductivity, and heat transfer rate</li>
+                        <li>Apply the concept to practical engineering problems</li>
+                    </ul>
+                    
+                    <p>By the end of this experiment, students should be able to predict heat transfer rates through different materials and understand the factors affecting thermal conduction in engineering applications.</p>
+                </div>
+                <div class="aim-visual">
+                    <i class="fas fa-thermometer-full"></i>
+                    <p>Visual representation of heat conduction</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Theory Section -->
+        <section id="theory" class="section">
+            <h2><i class="fas fa-book"></i> Theory</h2>
+            <p>Heat conduction is the transfer of thermal energy through a material without any motion of the material as a whole. It occurs when there is a temperature gradient within a body or when two bodies at different temperatures are in direct contact.</p>
+            
+            <div class="formula-box">
+                <h3>Fourier's Law of Heat Conduction</h3>
+                <div class="formula">Q = -kA(dT/dx)</div>
+                <p>The rate of heat transfer through a material is proportional to the negative gradient of temperature and the area through which heat flows.</p>
+            </div>
+            
+            <div class="theory-grid">
+                <div class="theory-card">
+                    <h3>Heat Conduction Mechanism</h3>
+                    <p>In solids, heat conduction occurs through two mechanisms: vibration of molecules (in all materials) and movement of free electrons (primarily in metals). The higher thermal conductivity of metals compared to insulators is due to their free electrons.</p>
+                </div>
+                
+                <div class="theory-card">
+                    <h3>Steady vs Unsteady Conduction</h3>
+                    <p>Steady-state conduction occurs when the temperature at each point in the material does not change with time. Unsteady or transient conduction occurs when temperatures change with time, requiring more complex analysis.</p>
+                </div>
+            </div>
+            
+            <h3>Variable Definitions</h3>
+            <table class="variable-table">
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Variable</th>
+                        <th>Unit</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Q</td>
+                        <td>Heat transfer rate</td>
+                        <td>W (Watts)</td>
+                        <td>Rate of thermal energy transfer</td>
+                    </tr>
+                    <tr>
+                        <td>k</td>
+                        <td>Thermal conductivity</td>
+                        <td>W/m·K</td>
+                        <td>Material property indicating ability to conduct heat</td>
+                    </tr>
+                    <tr>
+                        <td>A</td>
+                        <td>Cross-sectional area</td>
+                        <td>m²</td>
+                        <td>Area perpendicular to heat flow direction</td>
+                    </tr>
+                    <tr>
+                        <td>dT/dx</td>
+                        <td>Temperature gradient</td>
+                        <td>K/m</td>
+                        <td>Rate of temperature change with distance</td>
+                    </tr>
+                    <tr>
+                        <td>-</td>
+                        <td>Negative sign</td>
+                        <td>-</td>
+                        <td>Indicates heat flows from high to low temperature</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Pretest Section -->
+        <section id="pretest" class="section">
+            <h2><i class="fas fa-clipboard-check"></i> Pretest</h2>
+            <p>Test your existing knowledge of heat conduction concepts before proceeding with the experiment.</p>
+            
+            <form id="pretest-form">
+                <div class="question">
+                    <h4>1. What is the primary mechanism of heat conduction in metals?</h4>
+                    <div class="option">
+                        <input type="radio" id="pretest-q1-a" name="q1" value="a">
+                        <label for="pretest-q1-a">Vibration of atoms</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="pretest-q1-b" name="q1" value="b">
+                        <label for="pretest-q1-b">Movement of free electrons</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="pretest-q1-c" name="q1" value="c">
+                        <label for="pretest-q1-c">Convection currents</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="pretest-q1-d" name="q1" value="d">
+                        <label for="pretest-q1-d">Radiation emission</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <h4>2. According to Fourier's Law, heat transfer rate is directly proportional to:</h4>
+                    <div class="option">
+                        <input type="radio" id="pretest-q2-a" name="q2" value="a">
+                        <label for="pretest-q2-a">Temperature difference</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="pretest-q2-b" name="q2" value="b">
+                        <label for="pretest-q2-b">Cross-sectional area</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="pretest-q2-c" name="q2" value="c">
+                        <label for="pretest-q2-c">Thermal conductivity</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="pretest-q2-d" name="q2" value="d">
+                        <label for="pretest-q2-d">All of the above</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <h4>3. Which material typically has the highest thermal conductivity?</h4>
+                    <div class="option">
+                        <input type="radio" id="pretest-q3-a" name="q3" value="a">
+                        <label for="pretest-q3-a">Copper</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="pretest-q3-b" name="q3" value="b">
+                        <label for="pretest-q3-b">Wood</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="pretest-q3-c" name="q3" value="c">
+                        <label for="pretest-q3-c">Glass</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="pretest-q3-d" name="q3" value="d">
+                        <label for="pretest-q3-d">Air</label>
+                    </div>
+                </div>
+                
+                <button type="button" class="submit-btn" id="submit-pretest">Submit Pretest</button>
+            </form>
+        </section>
+
+        <!-- Simulation Section -->
+        <section id="simulation" class="section">
+            <h2><i class="fas fa-flask"></i> Simulation</h2>
+            <p>Interact with the simulation below to explore heat conduction through different materials. Adjust parameters to see how they affect heat transfer rates.</p>
+            
+            <div class="simulation-container">
+                <!-- Embedded simulation from an external source -->
+                <iframe class="simulation-iframe" src="https://phet.colorado.edu/sims/html/fouriers-law/latest/fouriers-law_en.html" allowfullscreen></iframe>
+            </div>
+            
+            <div class="simulation-note">
+                <h4><i class="fas fa-lightbulb"></i> Simulation Instructions:</h4>
+                <ul>
+                    <li>Adjust the temperature difference using the sliders</li>
+                    <li>Change material type to compare thermal conductivity</li>
+                    <li>Modify the cross-sectional area and thickness</li>
+                    <li>Observe how heat flow changes in real-time</li>
+                    <li>Note the temperature distribution along the material</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Posttest Section -->
+        <section id="posttest" class="section">
+            <h2><i class="fas fa-graduation-cap"></i> Posttest</h2>
+            <p>Assess your understanding of Fourier's Law and heat conduction after completing the simulation.</p>
+            
+            <form id="posttest-form">
+                <div class="question">
+                    <h4>1. In Fourier's Law, the negative sign indicates that:</h4>
+                    <div class="option">
+                        <input type="radio" id="posttest-q1-a" name="postq1" value="a">
+                        <label for="posttest-q1-a">Heat flows from low to high temperature</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="posttest-q1-b" name="postq1" value="b">
+                        <label for="posttest-q1-b">Heat flows from high to low temperature</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="posttest-q1-c" name="postq1" value="c">
+                        <label for="posttest-q1-c">The temperature gradient is negative</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="posttest-q1-d" name="postq1" value="d">
+                        <label for="posttest-q1-d">Thermal conductivity is negative</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <h4>2. If you double the thickness of a wall while keeping everything else constant, the heat transfer rate will:</h4>
+                    <div class="option">
+                        <input type="radio" id="posttest-q2-a" name="postq2" value="a">
+                        <label for="posttest-q2-a">Double</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="posttest-q2-b" name="postq2" value="b">
+                        <label for="posttest-q2-b">Halve</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="posttest-q2-c" name="postq2" value="c">
+                        <label for="posttest-q2-c">Quadruple</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="posttest-q2-d" name="postq2" value="d">
+                        <label for="posttest-q2-d">Remain the same</label>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <h4>3. Which of the following is NOT a factor in Fourier's Law of heat conduction?</h4>
+                    <div class="option">
+                        <input type="radio" id="posttest-q3-a" name="postq3" value="a">
+                        <label for="posttest-q3-a">Density of the material</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="posttest-q3-b" name="postq3" value="b">
+                        <label for="posttest-q3-b">Temperature gradient</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="posttest-q3-c" name="postq3" value="c">
+                        <label for="posttest-q3-c">Cross-sectional area</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="posttest-q3-d" name="postq3" value="d">
+                        <label for="posttest-q3-d">Thermal conductivity</label>
+                    </div>
+                </div>
+                
+                <button type="button" class="submit-btn" id="submit-posttest">Submit Posttest</button>
+            </form>
+        </section>
+
+        <!-- References Section -->
+        <section id="references" class="section">
+            <h2><i class="fas fa-book-open"></i> References</h2>
+            <p>Recommended textbooks and resources for further study on heat conduction and Fourier's Law:</p>
+            
+            <ul class="reference-list">
+                <li>
+                    <strong>Incropera, F. P., DeWitt, D. P., Bergman, T. L., & Lavine, A. S. (2017).</strong>
+                    <br><em>Fundamentals of Heat and Mass Transfer (8th ed.).</em> John Wiley & Sons.
+                </li>
+                <li>
+                    <strong>Cengel, Y. A., & Ghajar, A. J. (2020).</strong>
+                    <br><em>Heat and Mass Transfer: Fundamentals and Applications (6th ed.).</em> McGraw-Hill Education.
+                </li>
+                <li>
+                    <strong>Bergman, T. L., Lavine, A. S., Incropera, F. P., & DeWitt, D. P. (2011).</strong>
+                    <br><em>Introduction to Heat Transfer (6th ed.).</em> John Wiley & Sons.
+                </li>
+                <li>
+                    <strong>Ozisik, M. N. (2018).</strong>
+                    <br><em>Heat Conduction (3rd ed.).</em> John Wiley & Sons.
+                </li>
+                <li>
+                    <strong>Kreith, F., Manglik, R. M., & Bohn, M. S. (2017).</strong>
+                    <br><em>Principles of Heat Transfer (8th ed.).</em> Cengage Learning.
+                </li>
+                <li>
+                    <strong>Bejan, A. (2013).</strong>
+                    <br><em>Heat Transfer (1st ed.).</em> John Wiley & Sons.
+                </li>
+            </ul>
+        </section>
+
+        <!-- Contributors Section -->
+        <section id="contributors" class="section">
+            <h2><i class="fas fa-users"></i> Contributors</h2>
+            <p>This virtual laboratory was developed by the following team members:</p>
+            
+            <div class="contributors-grid">
+                <div class="contributor-card">
+                    <div class="contributor-img">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3>Dr. Sarah Johnson</h3>
+                    <p>Project Lead & Thermal Sciences Professor</p>
+                    <p>Department of Mechanical Engineering</p>
+                </div>
+                
+                <div class="contributor-card">
+                    <div class="contributor-img">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3>Michael Chen</h3>
+                    <p>Simulation Developer & Research Assistant</p>
+                    <p>M.S. in Thermal Engineering</p>
+                </div>
+                
+                <div class="contributor-card">
+                    <div class="contributor-img">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3>Priya Sharma</h3>
+                    <p>Content Developer & Instructional Designer</p>
+                    <p>Ph.D. in Engineering Education</p>
+                </div>
+                
+                <div class="contributor-card">
+                    <div class="contributor-img">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3>David Rodriguez</h3>
+                    <p>Web Developer & UI/UX Designer</p>
+                    <p>B.S. in Computer Science</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feedback Section -->
+        <section id="feedback" class="section">
+            <h2><i class="fas fa-comment-dots"></i> Feedback</h2>
+            <p>We value your feedback to improve this virtual laboratory. Please share your experience and suggestions.</p>
+            
+            <form id="feedback-form" class="feedback-form">
+                <div class="form-group">
+                    <label for="name">Your Name (Optional):</label>
+                    <input type="text" id="name" placeholder="Enter your name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Your Email (Optional):</label>
+                    <input type="email" id="email" placeholder="Enter your email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="feedback-text">Your Feedback:</label>
+                    <textarea id="feedback-text" placeholder="Please share your thoughts on this virtual lab, suggestions for improvement, or any issues you encountered."></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn">Submit Feedback</button>
+            </form>
+        </section>
     </div>
-</div>
 
-<!-- FEEDBACK -->
-<div id="feedback" class="section">
-    <h2>Feedback</h2>
-    <form>
-        <label>Your Name:</label><br>
-        <input type="text"><br><br>
+    <!-- Footer -->
+    <footer>
+        <p>Visual Lab: Heat Conduction &copy; 2023 | Department of Mechanical Engineering</p>
+        <p>This educational resource is designed for engineering students studying heat transfer.</p>
+    </footer>
 
-        <label>Your Feedback:</label><br>
-        <textarea rows="4" cols="40"></textarea><br><br>
-
-        <button type="submit">Submit</button>
-    </form>
-</div>
-
-<footer>
-    <p>© Visual Lab on Heat Conduction</p>
-</footer>
-
-<script>
-    function showSection(id) {
-        let sections = document.getElementsByClassName("section");
-        for (let i = 0; i < sections.length; i++) {
-            sections[i].style.display = "none";
-        }
-        document.getElementById(id).style.display = "block";
-    }
-</script>
-
+    <script>
+        // Navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const navButtons = document.querySelectorAll('.nav-button');
+            const sections = document.querySelectorAll('.section');
+            
+            // Function to show selected section and hide others
+            function showSection(sectionId) {
+                // Hide all sections
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Show selected section
+                const selectedSection = document.getElementById(sectionId);
+                selectedSection.classList.add('active');
+                
+                // Update active button
+                navButtons.forEach(button => {
+                    if (button.getAttribute('data-section') === sectionId) {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Add click event listeners to navigation buttons
+            navButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const sectionId = this.getAttribute('data-section');
+                    showSection(sectionId);
+                });
+            });
+            
+            // Pretest submission
+            const submitPretestBtn = document.getElementById('submit-pretest');
+            if (submitPretestBtn) {
+                submitPretestBtn.addEventListener('click', function() {
+                    alert('Pretest submitted! Your responses have been recorded. Proceed to the simulation section.');
+                    // In a real implementation, this would send data to a server
+                });
+            }
+            
+            // Posttest submission
+            const submitPosttestBtn = document.getElementById('submit-posttest');
+            if (submitPosttestBtn) {
+                submitPosttestBtn.addEventListener('click', function() {
+                    alert('Posttest submitted! Your understanding of heat conduction concepts has been assessed.');
+                    // In a real implementation, this would send data to a server and show results
+                });
+            }
+            
+            // Feedback form submission
+            const feedbackForm = document.getElementById('feedback-form');
+            if (feedbackForm) {
+                feedbackForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const name = document.getElementById('name').value;
+                    const feedbackText = document.getElementById('feedback-text').value;
+                    
+                    if (!feedbackText.trim()) {
+                        alert('Please provide your feedback before submitting.');
+                        return;
+                    }
+                    
+                    // In a real implementation, this would send data to a server
+                    console.log('Feedback submitted:', { name, feedbackText });
+                    
+                    // Show success message
+                    alert('Thank you for your feedback! Your input helps us improve this educational resource.');
+                    
+                    // Reset form
+                    feedbackForm.reset();
+                });
+            }
+            
+            // Initialize the first section as active
+            showSection('aim');
+        });
+    </script>
 </body>
 </html>

@@ -559,6 +559,11 @@
             transform: translateY(2px);
         }
 
+        .reset-btn {
+            background: linear-gradient(135deg, #6c757d, #495057) !important;
+            box-shadow: 0 6px 0 #343a40, 0 12px 20px rgba(0, 0, 0, 0.25) !important;
+        }
+
         .simulation-result {
             background: rgba(255, 255, 255, 0.6);
             padding: 14px;
@@ -589,6 +594,20 @@
             margin-top: 5px;
         }
 
+        .placeholder {
+            text-align: center;
+            padding: 50px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            color: #666;
+        }
+
+        .placeholder i {
+            font-size: 48px;
+            color: #06b6d4;
+            margin-bottom: 15px;
+        }
+
         /* References Section */
         .reference-list {
             list-style-type: none;
@@ -601,7 +620,7 @@
             border-radius: var(--border-radius);
         }
 
-        /* Contributors Section - Updated */
+        /* Contributors Section */
         .contributors-section {
             background-color: var(--light-bg);
             border-radius: var(--border-radius);
@@ -1419,7 +1438,7 @@
         <!-- Enhanced Simulation Section -->
         <section id="simulation" class="section">
             <h2><i class="fas fa-flask"></i> Interactive Simulation</h2>
-            <p>Use this interactive simulation to calculate heat flow through cylindrical pipes. Adjust parameters and see results in real-time with visualizations.</p>
+            <p>Use this interactive simulation to calculate heat flow through cylindrical pipes. Adjust parameters and click Calculate to see results with visualizations.</p>
             
             <div class="simulation-container">
                 <div class="simulation-grid">
@@ -1467,23 +1486,37 @@
                         </select>
                         
                         <button class="simulation-btn" onclick="calculateSimulation()">Calculate Heat Flow</button>
+                        <button class="simulation-btn reset-btn" onclick="resetSimulation()" style="margin-top: 10px;">Reset Simulation</button>
                     </div>
                     
                     <!-- PIPE DIAGRAM -->
                     <div class="simulation-panel">
                         <h3>Pipe Cross-Section</h3>
-                        <canvas id="pipeCanvas" width="360" height="360" class="simulation-canvas"></canvas>
-                        <p class="small-text">Red → hot inner surface, white → cooler outer surface</p>
+                        <div id="pipeDiagramPlaceholder" class="placeholder">
+                            <i class="fas fa-sliders-h"></i>
+                            <p>Adjust parameters and click "Calculate" to see the pipe diagram</p>
+                        </div>
+                        <canvas id="pipeCanvas" width="360" height="360" class="simulation-canvas" style="display: none;"></canvas>
+                        <p class="small-text" id="pipeCaption" style="display: none;">Red → hot inner surface, white → cooler outer surface</p>
                     </div>
                     
                     <!-- RESULTS -->
                     <div class="simulation-panel">
                         <h3>Results & Graphs</h3>
                         <div id="simulation-results" class="simulation-result">
-                            <p>Click "Calculate" to see results here</p>
+                            <div id="initialMessage" style="text-align: center;">
+                                <i class="fas fa-calculator" style="font-size: 36px; color: #06b6d4; margin-bottom: 15px;"></i>
+                                <p>Click "Calculate" to see simulation results here</p>
+                            </div>
                         </div>
-                        <canvas id="tempChart" class="simulation-canvas"></canvas>
-                        <canvas id="timeChart" class="simulation-canvas"></canvas>
+                        
+                        <div id="graphPlaceholder" class="placeholder" style="padding: 30px; margin-top: 15px;">
+                            <i class="fas fa-chart-line"></i>
+                            <p>Graphs will appear here after calculation</p>
+                        </div>
+                        
+                        <canvas id="tempChart" class="simulation-canvas" style="display: none;"></canvas>
+                        <canvas id="timeChart" class="simulation-canvas" style="display: none; margin-top: 15px;"></canvas>
                     </div>
                 </div>
             </div>
@@ -1491,12 +1524,13 @@
             <div class="simulation-note">
                 <h4><i class="fas fa-lightbulb"></i> Simulation Instructions:</h4>
                 <ul>
-                    <li>Adjust all input parameters to see how they affect heat flow</li>
+                    <li>Adjust all input parameters as needed</li>
+                    <li>Click "Calculate" button to run the simulation</li>
                     <li>Observe the pipe cross-section visualization</li>
                     <li>View temperature distribution across the pipe wall</li>
                     <li>See heat flow rate over time</li>
+                    <li>Use "Reset" to clear results and start over</li>
                     <li>Try different materials by changing thermal conductivity (k)</li>
-                    <li>Experiment with different radius ratios and temperature differences</li>
                 </ul>
                 <p><strong>Use this simulation to verify the calculation steps from the Theory section! Try to match the example calculations with your simulation results.</strong></p>
             </div>
@@ -1505,9 +1539,9 @@
                 <h4><i class="fas fa-vial"></i> Virtual Experiment: Parameter Effects</h4>
                 <p><strong>Objective:</strong> Understand how different parameters affect heat conduction in cylindrical pipes</p>
                 <ol>
-                    <li>Start with the default values and note the heat flow rate</li>
-                    <li>Double the temperature difference (T₁ - T₂) - what happens to Q?</li>
-                    <li>Double the pipe length (L) - what happens to Q?</li>
+                    <li>Start with the default values and click "Calculate"</li>
+                    <li>Double the temperature difference (T₁ - T₂) and recalculate - what happens to Q?</li>
+                    <li>Double the pipe length (L) and recalculate - what happens to Q?</li>
                     <li>Increase the outer radius while keeping inner radius constant - what happens to Q?</li>
                     <li>Change thermal conductivity from steel (45 W/m·K) to insulation (0.05 W/m·K) - observe the dramatic change</li>
                     <li>Observe how the temperature distribution changes from linear to logarithmic</li>
@@ -2431,14 +2465,13 @@
             
             // Initialize the first section as active
             showSection('aim');
-            
-            // Initialize simulation with default values
-            setTimeout(calculateSimulation, 100);
         });
         
         // Simulation variables
-        let tempChart, timeChart;
+        let tempChart = null;
+        let timeChart = null;
         let pipeData = {};
+        let simulationCalculated = false;
         
         // Simulation calculation function
         function calculateSimulation() {
@@ -2451,16 +2484,48 @@
             const time = parseFloat(document.getElementById("time").value);
             const unit = document.getElementById("outunit").value;
             
+            // Validate inputs
+            if (isNaN(r1) || isNaN(r2) || isNaN(T1) || isNaN(T2) || isNaN(k) || isNaN(L) || isNaN(time)) {
+                alert("Please enter valid numbers for all parameters.");
+                return;
+            }
+            
+            if (r1 <= 0 || r2 <= 0 || r1 >= r2) {
+                alert("Inner radius must be positive and less than outer radius.");
+                return;
+            }
+            
+            if (L <= 0) {
+                alert("Pipe length must be positive.");
+                return;
+            }
+            
+            if (time <= 0) {
+                alert("Time must be positive.");
+                return;
+            }
+            
             // Calculate heat flow using Fourier's Law
             const Q = (2 * Math.PI * k * L * (T1 - T2)) / Math.log(r2 / r1);
             const Qout = unit === "cal" ? Q / 4.186 : Q;
             
+            // Hide placeholders and show results
+            document.getElementById("initialMessage").style.display = "none";
+            document.getElementById("graphPlaceholder").style.display = "none";
+            document.getElementById("pipeDiagramPlaceholder").style.display = "none";
+            document.getElementById("pipeCanvas").style.display = "block";
+            document.getElementById("pipeCaption").style.display = "block";
+            document.getElementById("tempChart").style.display = "block";
+            document.getElementById("timeChart").style.display = "block";
+            
             // Display results
             document.getElementById("simulation-results").innerHTML = 
                 `<h4>Simulation Results</h4>
-                 <p><strong>Heat Flow Rate:</strong> ${Qout.toFixed(4)} ${unit === "cal" ? "cal/sec" : "W"}</p>
+                 <p><strong>Heat Flow Rate:</strong> <span style="color: #0a2463; font-weight: bold;">${Qout.toFixed(4)} ${unit === "cal" ? "cal/sec" : "W"}</span></p>
                  <p><strong>Total Heat Transferred in ${time}s:</strong> ${(Qout * time).toFixed(4)} ${unit === "cal" ? "cal" : "J"}</p>
                  <p><strong>Thermal Resistance:</strong> ${(Math.log(r2 / r1) / (2 * Math.PI * k * L)).toFixed(6)} K/W</p>
+                 <p><strong>Radius Ratio (r₂/r₁):</strong> ${(r2 / r1).toFixed(3)}</p>
+                 <p><strong>Temperature Difference:</strong> ${(T1 - T2).toFixed(1)} °C</p>
                  <p><strong>Formula Applied:</strong> Q = 2πkL(T₁−T₂)/ln(r₂/r₁)</p>`;
             
             // Draw pipe diagram
@@ -2474,8 +2539,11 @@
                 T.push(T1 - (T1 - T2) * Math.log(rv / r1) / Math.log(r2 / r1));
             }
             
-            // Create temperature distribution chart
+            // Destroy existing charts if they exist
             if (tempChart) tempChart.destroy();
+            if (timeChart) timeChart.destroy();
+            
+            // Create temperature distribution chart
             tempChart = new Chart(document.getElementById("tempChart"), {
                 type: "line",
                 data: {
@@ -2486,28 +2554,47 @@
                         borderColor: "#ff5722",
                         backgroundColor: "rgba(255, 87, 34, 0.1)",
                         borderWidth: 3,
-                        fill: true
+                        fill: true,
+                        tension: 0.4
                     }]
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: true,
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Temperature Distribution Across Pipe Wall'
+                            text: 'Temperature Distribution Across Pipe Wall',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Temperature: ${context.parsed.y.toFixed(2)}°C at r = ${context.label}m`;
+                                }
+                            }
                         }
                     },
                     scales: {
                         x: {
                             title: {
                                 display: true,
-                                text: 'Radius (m)'
+                                text: 'Radius (m)',
+                                font: {
+                                    weight: 'bold'
+                                }
                             }
                         },
                         y: {
                             title: {
                                 display: true,
-                                text: 'Temperature (°C)'
+                                text: 'Temperature (°C)',
+                                font: {
+                                    weight: 'bold'
+                                }
                             }
                         }
                     }
@@ -2522,7 +2609,6 @@
             }
             
             // Create heat flow vs time chart
-            if (timeChart) timeChart.destroy();
             timeChart = new Chart(document.getElementById("timeChart"), {
                 type: "line",
                 data: {
@@ -2538,28 +2624,103 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: true,
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Heat Flow Rate Over Time (Steady State)'
+                            text: 'Heat Flow Rate Over Time (Steady State)',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Heat Flow: ${context.parsed.y.toFixed(4)} ${unit === "cal" ? "cal/sec" : "W"}`;
+                                }
+                            }
                         }
                     },
                     scales: {
                         x: {
                             title: {
                                 display: true,
-                                text: 'Time (seconds)'
+                                text: 'Time (seconds)',
+                                font: {
+                                    weight: 'bold'
+                                }
                             }
                         },
                         y: {
                             title: {
                                 display: true,
-                                text: `Heat Flow (${unit === "cal" ? "cal/sec" : "W"})`
-                            }
+                                text: `Heat Flow (${unit === "cal" ? "cal/sec" : "W"})`,
+                                font: {
+                                    weight: 'bold'
+                                }
+                            },
+                            beginAtZero: true
                         }
                     }
                 }
             });
+            
+            simulationCalculated = true;
+            
+            // Scroll to results for better visibility
+            document.getElementById("simulation-results").scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        // Reset simulation function
+        function resetSimulation() {
+            // Reset input values to defaults
+            document.getElementById("r1").value = "5";
+            document.getElementById("r2").value = "7";
+            document.getElementById("T1").value = "200";
+            document.getElementById("T2").value = "50";
+            document.getElementById("k").value = "45";
+            document.getElementById("L").value = "1";
+            document.getElementById("time").value = "60";
+            
+            // Reset selects to defaults
+            document.getElementById("r1unit").value = "1";
+            document.getElementById("r2unit").value = "1";
+            document.getElementById("Lunit").value = "1";
+            document.getElementById("outunit").value = "W";
+            
+            // Hide graphs and show placeholders
+            document.getElementById("initialMessage").style.display = "block";
+            document.getElementById("graphPlaceholder").style.display = "block";
+            document.getElementById("pipeDiagramPlaceholder").style.display = "block";
+            document.getElementById("pipeCanvas").style.display = "none";
+            document.getElementById("pipeCaption").style.display = "none";
+            document.getElementById("tempChart").style.display = "none";
+            document.getElementById("timeChart").style.display = "none";
+            
+            // Reset results display
+            document.getElementById("simulation-results").innerHTML = 
+                `<div id="initialMessage" style="text-align: center;">
+                    <i class="fas fa-calculator" style="font-size: 36px; color: #06b6d4; margin-bottom: 15px;"></i>
+                    <p>Click "Calculate" to see simulation results here</p>
+                </div>`;
+            
+            // Clear charts if they exist
+            if (tempChart) {
+                tempChart.destroy();
+                tempChart = null;
+            }
+            if (timeChart) {
+                timeChart.destroy();
+                timeChart = null;
+            }
+            
+            // Clear canvas
+            const canvas = document.getElementById("pipeCanvas");
+            const ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            simulationCalculated = false;
         }
         
         // Draw pipe diagram
@@ -2572,7 +2733,9 @@
             const cx = canvas.width / 2;
             const cy = canvas.height / 2;
             
-            const scale = 140 / Math.max(r2, 0.1);
+            // Scale to fit in canvas
+            const maxRadius = Math.max(r1, r2, 0.1);
+            const scale = 140 / maxRadius;
             const R1 = r1 * scale;
             const R2 = r2 * scale;
             
@@ -2620,16 +2783,16 @@
             ctx.setLineDash([]);
             
             // Add labels
-            ctx.font = "14px Arial";
+            ctx.font = "bold 14px Arial";
             ctx.fillStyle = "#000";
-            ctx.fillText(`r₁ = ${r1.toFixed(3)} m`, cx + R1 / 2 - 20, cy - 8);
-            ctx.fillText(`r₂ = ${r2.toFixed(3)} m`, cx + R2 / 2 - 20, cy + 18);
+            ctx.fillText(`r₁ = ${r1.toFixed(3)} m`, cx + R1 / 2 - 25, cy - 10);
+            ctx.fillText(`r₂ = ${r2.toFixed(3)} m`, cx + R2 / 2 - 25, cy + 20);
             
             // Add temperature labels
             ctx.fillStyle = "#ff5722";
-            ctx.fillText("T₁ (Hot)", cx - 20, cy - R1 - 10);
+            ctx.fillText("T₁ (Hot)", cx - 25, cy - R1 - 15);
             ctx.fillStyle = "#0b5ed7";
-            ctx.fillText("T₂ (Cool)", cx - 20, cy - R2 - 10);
+            ctx.fillText("T₂ (Cool)", cx - 25, cy - R2 - 15);
             
             // Add heat flow arrow
             ctx.strokeStyle = "#ff5722";
@@ -2650,19 +2813,8 @@
             
             // Heat flow label
             ctx.fillStyle = "#000";
-            ctx.fillText("Heat Flow", cx + (R1 + R2) / 2 - 20, cy - 10);
+            ctx.fillText("Heat Flow", cx + (R1 + R2) / 2 - 25, cy - 15);
         }
-        
-        // Add real-time calculation on input change
-        document.addEventListener('DOMContentLoaded', function() {
-            ["r1", "r2", "T1", "T2", "k", "L", "time"].forEach(id => {
-                document.getElementById(id).addEventListener("input", calculateSimulation);
-            });
-            
-            ["r1unit", "r2unit", "Lunit", "outunit"].forEach(id => {
-                document.getElementById(id).addEventListener("change", calculateSimulation);
-            });
-        });
     </script>
 </body>
 </html>

@@ -2,94 +2,96 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Visual Lab: Heat Conduction</title>
+<title>Visual Lab – Heat Conduction</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Font Awesome -->
+<!-- Icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-/* ===== ORIGINAL SITE STYLES (UNCHANGED) ===== */
-*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Segoe UI,Tahoma,sans-serif}
+
 :root{
---primary-blue:#0a2463;
---secondary-blue:#1e3d8f;
---light-blue:#3e8eef;
---accent-blue:#5fa8f2;
---light-bg:#f0f7ff;
---card-bg:#fff;
---text-dark:#333;
---text-light:#666;
---border-radius:10px;
---shadow:0 5px 15px rgba(0,0,0,.08);
---cyan-bg1:#c9f7f5;
---cyan-bg2:#e6fffa;
+--primary:#0a2463;
+--secondary:#1e3d8f;
 --accent:#fd7e14;
---header:#06b6d4;
+--bg:#f0f7ff;
 }
-body{background:var(--light-bg);color:var(--text-dark);line-height:1.6}
+
+body{background:var(--bg);color:#222}
 
 /* HEADER */
 header{
-background:linear-gradient(135deg,var(--primary-blue),var(--secondary-blue));
-color:white;
-padding:2rem 1rem;
-text-align:center;
-border-bottom:5px solid var(--accent-blue)
+background:linear-gradient(135deg,var(--primary),var(--secondary));
+color:white;padding:1.8rem;text-align:center;
 }
-nav{background:var(--secondary-blue);padding:.5rem;position:sticky;top:0;z-index:100}
-.nav-container{display:flex;justify-content:center;flex-wrap:wrap}
-.nav-button{
+
+/* NAV */
+nav{
+background:var(--secondary);
+display:flex;justify-content:center;gap:10px;
+padding:10px;position:sticky;top:0
+}
+nav button{
 background:none;border:none;color:white;
-padding:.7rem 1.1rem;margin:.2rem;
-cursor:pointer;border-radius:5px
+padding:8px 16px;border-radius:6px;
+cursor:pointer;font-weight:600
 }
-.nav-button.active{background:var(--light-blue)}
-.container{max-width:1200px;margin:2rem auto;padding:0 1rem}
-.section{display:none;background:white;padding:2rem;border-radius:10px;box-shadow:var(--shadow)}
+nav button.active{background:#3e8eef}
+
+/* SECTIONS */
+.section{
+display:none;
+max-width:1200px;
+margin:20px auto;
+background:white;
+padding:24px;
+border-radius:12px;
+box-shadow:0 6px 14px rgba(0,0,0,.12)
+}
 .section.active{display:block}
 
-/* ===== SIMULATION STYLES (FROM YOUR FILE) ===== */
-.simulation-container{
+/* SIMULATION */
+.sim-grid{
 display:grid;
-grid-template-columns:1fr 1.5fr 1.5fr;
-gap:16px;
-padding:16px;
+grid-template-columns:1fr 1.4fr 1.4fr;
+gap:16px
 }
 .panel{
-background:rgba(255,255,255,.4);
-backdrop-filter:blur(12px);
-padding:18px;
-border-radius:18px;
-box-shadow:0 12px 30px rgba(0,0,0,.25)
+background:rgba(255,255,255,.85);
+padding:16px;border-radius:14px;
+box-shadow:0 8px 18px rgba(0,0,0,.2)
 }
 .panel h3{border-bottom:2px solid #e5e7eb;margin-bottom:10px}
+
 input,select{
 width:100%;padding:8px;margin:6px 0;
-border-radius:8px;border:1px solid #cbd5e1
+border-radius:6px;border:1px solid #ccc
 }
-button{
-width:100%;padding:12px;margin-top:10px;
-border:none;border-radius:10px;
+button.calc{
 background:linear-gradient(135deg,#ff9f1c,var(--accent));
-color:white;font-weight:bold;cursor:pointer
+border:none;color:white;
+padding:12px;border-radius:8px;
+cursor:pointer;font-weight:700
 }
-.result{
-background:rgba(255,255,255,.6);
-padding:14px;border-radius:14px;
-border-left:5px solid var(--header)
-}
+
 canvas{
-background:white;border-radius:14px;
+background:white;border-radius:12px;
 box-shadow:0 6px 14px rgba(0,0,0,.2);
 margin-top:10px
 }
-.small{font-size:13px;color:#475569}
+
+.result{
+background:#eef7ff;
+padding:12px;border-radius:10px;
+border-left:5px solid #06b6d4
+}
+
 @media(max-width:900px){
-.simulation-container{grid-template-columns:1fr}
+.sim-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -98,30 +100,30 @@ margin-top:10px
 
 <header>
 <h1>Visual Lab: Heat Conduction</h1>
-<p>Interactive Virtual Laboratory for Fourier’s Law</p>
+<p>Fourier’s Law – Cylindrical Pipe Simulation</p>
 </header>
 
 <nav>
-<div class="nav-container">
-<button class="nav-button active" data-section="aim">Aim</button>
-<button class="nav-button" data-section="simulation">Simulation</button>
-</div>
+<button class="tab active" data-target="aim">Aim</button>
+<button class="tab" data-target="simulation">Simulation</button>
 </nav>
-
-<div class="container">
 
 <section id="aim" class="section active">
 <h2>Aim</h2>
-<p>To study heat conduction through cylindrical pipes using Fourier’s Law.</p>
+<p>
+To study heat conduction through cylindrical pipes using Fourier’s Law
+and visualize temperature distribution and heat flow rate.
+</p>
 </section>
 
-<!-- ===================== NEW SIMULATION SECTION ===================== -->
+<!-- ================= SIMULATION ================= -->
 <section id="simulation" class="section">
+
 <h2><i class="fas fa-flask"></i> Heat Conduction Simulation</h2>
 
-<div class="simulation-container">
+<div class="sim-grid">
 
-<!-- INPUT PANEL -->
+<!-- INPUT -->
 <div class="panel">
 <h3>Input Parameters</h3>
 
@@ -146,20 +148,22 @@ margin-top:10px
 <input id="L" type="number" value="1">
 <select id="Lunit"><option value="1">m</option><option value="0.01">cm</option></select>
 
-<label>Time (seconds)</label>
+<label>Time (s)</label>
 <input id="time" type="number" value="60">
 
 <label>Output Unit</label>
 <select id="outunit"><option value="W">Watt</option><option value="cal">cal/sec</option></select>
 
-<button onclick="calculate()">Calculate</button>
+<button class="calc" onclick="calculate()">Calculate</button>
 </div>
 
 <!-- PIPE -->
 <div class="panel">
 <h3>Pipe Cross-Section</h3>
-<canvas id="pipeCanvas" width="360" height="360"></canvas>
-<p class="small">Red → hot inner surface, white → cooler outer surface</p>
+<canvas id="pipeCanvas" width="340" height="340"></canvas>
+<p style="font-size:13px;color:#555">
+Red → hot inner surface, White → cooler outer surface
+</p>
 </div>
 
 <!-- RESULTS -->
@@ -173,26 +177,25 @@ margin-top:10px
 </div>
 </section>
 
-</div>
-
 <script>
-/* ===== NAVIGATION ===== */
-document.querySelectorAll(".nav-button").forEach(btn=>{
-btn.onclick=()=>{
-document.querySelectorAll(".nav-button").forEach(b=>b.classList.remove("active"));
+/* NAV */
+document.querySelectorAll(".tab").forEach(b=>{
+b.onclick=()=>{
+document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-btn.classList.add("active");
-document.getElementById(btn.dataset.section).classList.add("active");
+b.classList.add("active");
+document.getElementById(b.dataset.target).classList.add("active");
 };
 });
 
-/* ===== SIMULATION JS (UNCHANGED LOGIC) ===== */
-let tempChart,timeChart;
+let tempChart=null,timeChart=null;
 
-function drawPipeDiagram(r1,r2){
+/* PIPE */
+function drawPipe(r1,r2){
 const c=document.getElementById("pipeCanvas"),ctx=c.getContext("2d");
 ctx.clearRect(0,0,c.width,c.height);
-const cx=c.width/2,cy=c.height/2,scale=140/r2;
+const cx=c.width/2,cy=c.height/2;
+const scale=140/r2;
 const R1=r1*scale,R2=r2*scale;
 const g=ctx.createRadialGradient(cx,cy,R1,cx,cy,R2);
 g.addColorStop(0,"#ff5722");g.addColorStop(1,"#fff");
@@ -201,35 +204,52 @@ ctx.beginPath();ctx.arc(cx,cy,R1,0,2*Math.PI);ctx.fillStyle="#fff";ctx.fill();
 ctx.stroke();
 }
 
+/* CALC */
 function calculate(){
-const r1=r1v(),r2=r2v();
-const T1=+T1v(),T2=+T2v(),k=+kv(),L=Lv(),t=+timev(),u=unitv();
-const Q=(2*Math.PI*k*L*(T1-T2))/Math.log(r2/r1);
-const Qo=u==="cal"?Q/4.186:Q;
-results.innerHTML=`<b>Heat Flow:</b> ${Qo.toFixed(4)} ${u==="cal"?"cal/sec":"W"}<br>
-<b>Total Heat:</b> ${(Qo*t).toFixed(4)}<br>
-<b>Formula:</b> Q=2πkL(T₁−T₂)/ln(r₂/r₁)`;
-drawPipeDiagram(r1,r2);
+const r1=+r1v(),r2=+r2v();
+const T1v_=+T1.value,T2v_=+T2.value;
+const k_=+k.value,L_=+L.value*+Lunit.value;
+const t_=+time.value;
+const unit=outunit.value;
 
-const r=[],T=[];
+const Q=(2*Math.PI*k_*L_*(T1v_-T2v_))/Math.log(r2/r1);
+const Qout=unit==="cal"?Q/4.186:Q;
+
+results.innerHTML=
+`<b>Heat Flow Rate:</b> ${Qout.toFixed(4)} ${unit==="cal"?"cal/sec":"W"}<br>
+<b>Total Heat:</b> ${(Qout*t_).toFixed(4)}<br>
+<b>Formula:</b> Q = 2πkL(T₁−T₂)/ln(r₂/r₁)`;
+
+drawPipe(r1,r2);
+
+/* TEMP PROFILE */
+let R=[],T=[];
 for(let i=0;i<=20;i++){
 let rv=r1+(r2-r1)*i/20;
-r.push(rv.toFixed(4));
-T.push(T1-(T1-T2)*Math.log(rv/r1)/Math.log(r2/r1));
+R.push(rv.toFixed(4));
+T.push(T1v_-(T1v_-T2v_)*Math.log(rv/r1)/Math.log(r2/r1));
 }
+
 tempChart?.destroy();
-tempChart=new Chart(tempChartCanvas(),{type:"line",
-data:{labels:r,datasets:[{label:"Temperature (°C)",data:T,borderColor:"#ff5722",borderWidth:3}]}});
+tempChart=new Chart(tempChartEl(),{
+type:"line",
+data:{labels:R,datasets:[{label:"Temperature (°C)",data:T,borderColor:"#ff5722",borderWidth:3}]}
+});
+
+/* TIME GRAPH */
+let tt=[],qq=[];
+for(let i=0;i<=10;i++){tt.push(i*t_/10);qq.push(Qout);}
+timeChart?.destroy();
+timeChart=new Chart(timeChartEl(),{
+type:"line",
+data:{labels:tt,datasets:[{label:"Heat Flow",data:qq,borderColor:"#0b5ed7",borderWidth:3}]}
+});
 }
+
 const r1v=()=>r1.value*r1unit.value;
 const r2v=()=>r2.value*r2unit.value;
-const T1v=()=>T1.value;
-const T2v=()=>T2.value;
-const kv=()=>k.value;
-const Lv=()=>L.value*Lunit.value;
-const timev=()=>time.value;
-const unitv=()=>outunit.value;
-const tempChartCanvas=()=>document.getElementById("tempChart");
+const tempChartEl=()=>document.getElementById("tempChart");
+const timeChartEl=()=>document.getElementById("timeChart");
 </script>
 
 </body>
